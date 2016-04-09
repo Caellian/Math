@@ -7,6 +7,9 @@ I have no intentions of insulting other libraries, I just have a compulsive need
 I'm not completely happy with someone else's. Also, I believe there are currently no libraries out there for Java or
 languages extending it which support Vectors and Matrices of any dimension and are as simple as this one at the same time.
 
+##License & Documentation
+You can find license [here](https://github.com/Caellian/Math/blob/master/LICENSE.md) and documentation [here](http://caellian.github.io/Math/).
+
 ##TODO List
 - [ ] Add Vectors and Matrices of other types.
 - [ ] Maybe add other content.
