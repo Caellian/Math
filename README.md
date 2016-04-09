@@ -20,7 +20,7 @@ maven { url "http://dl.bintray.com/caellian/caellian" }
 ```
 After adding following statement to dependencies closure you are good to go:
 ```Groovy
-compile 'hr.caellian:math:1.0.0'
+compile 'hr.caellian:math:1.0.+'
 ```
 
 ###Maven
@@ -63,7 +63,7 @@ Add this dependency:
 <dependency>
 	<groupId>hr.caellian</groupId>
 	<artifactId>math</artifactId>
-	<version>1.0.0</version>
+	<version>[1.0.0,1.1.0)</version>
 	<type>pom</type>
 </dependency>
 ```
