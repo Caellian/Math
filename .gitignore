@@ -1,0 +1,24 @@
+#Ignore All
+/*
+
+#Except:
+# Source Files
+!/src
+
+# License File
+!/LICENSE.md
+
+# GitHub Files
+!.gitignore
+!/*.md
+
+# Maven
+!/pom.xml
+
+# Gradle
+!/build.gradle
+!/build.properties
+!/settings.gradle
+!/gradle.properties
+!/gradlew*
+!/gradle
