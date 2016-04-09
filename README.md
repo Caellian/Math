@@ -8,9 +8,9 @@ I'm not completely happy with someone else's. Also, I believe there are currentl
 languages extending it which support Vectors and Matrices of any dimension and are as simple as this one at the same time.
 
 ##TODO List
-[ ] Add Vectors and Matrices of other types.
-[ ] Maybe add other content.
-[ ] Create a nice website.
+- [ ] Add Vectors and Matrices of other types.
+- [ ] Maybe add other content.
+- [ ] Create a nice website.
 
 ##Contributing
 Anyone if free to contibute! You can report bugs or add suggestions [here](https://github.com/Caellian/Math/issues).
