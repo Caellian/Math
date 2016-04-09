@@ -1,4 +1,6 @@
 # Math
+[![Build Status](https://drone.io/github.com/Caellian/Math/status.png)](https://drone.io/github.com/Caellian/Math/latest) 
+[ ![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg) ](https://bintray.com/caellian/caellian/Math/_latestVersion)
 Math library containing classes for matrix and vector calculation.
 
 ##Why did I create this library?
