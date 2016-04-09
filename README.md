@@ -14,9 +14,9 @@ You can find license [here](https://github.com/Caellian/Math/blob/master/LICENSE
 
 ##Including "Math" in your projects
 ###Gradle
-Add following piece of code to repositories closure in build.gradle:
+Add jCenter to repositories closure in build.gradle:
 ```Groovy
-maven { url "http://dl.bintray.com/caellian/caellian" }
+jcenter()
 ```
 After adding following statement to dependencies closure you are good to go:
 ```Groovy
