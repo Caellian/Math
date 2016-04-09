@@ -22,7 +22,7 @@
 
     <groupId>hr.caellian</groupId>
     <artifactId>math</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Math library containing classes for matrix and vector calculation.</description>

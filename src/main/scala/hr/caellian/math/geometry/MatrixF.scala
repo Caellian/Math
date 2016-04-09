@@ -30,7 +30,7 @@ import org.apache.commons.math3.util.FastMath
   *
   * @author Caellian
   */
-protected class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
+class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
 
 	/**
 	  * @return this matrix.
@@ -362,6 +362,7 @@ protected class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
   * @author Caellian
   */
 object MatrixF {
+	type MatF = MatrixF
 
 	/**
 	  * Creates a new matrix containing given data.

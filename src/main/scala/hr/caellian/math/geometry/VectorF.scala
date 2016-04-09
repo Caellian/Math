@@ -28,7 +28,7 @@ import org.apache.commons.math3.util.FastMath
   *
   * @author Caellian
   */
-protected class VectorF(val data: Array[Float]) extends Vector[Float] {
+class VectorF(val data: Array[Float]) extends Vector[Float] {
 
 	val size = data.length
 
@@ -312,6 +312,8 @@ protected class VectorF(val data: Array[Float]) extends Vector[Float] {
   * @author Caellian
   */
 object VectorF {
+	type VecF = VectorF
+
 	/**
 	  * Creates a new vector using given values.
 	  *
