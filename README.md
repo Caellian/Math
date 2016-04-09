@@ -12,6 +12,62 @@ languages extending it which support Vectors and Matrices of any dimension and a
 ##License & Documentation
 You can find license [here](https://github.com/Caellian/Math/blob/master/LICENSE.md) and documentation [here](http://caellian.github.io/Math/).
 
+##Including "Math" in your projects
+###Gradle
+Add following piece of code to repositories closure in build.gradle:
+```Groovy
+maven { url "http://dl.bintray.com/caellian/caellian" }
+```
+After adding following statement to dependencies closure you are good to go:
+```Groovy
+compile 'hr.caellian:math:1.0.0'
+```
+
+###Maven
+Maven settings:
+```xml
+<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'
+xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <profiles>
+  	<profile>
+  		<repositories>
+  			<repository>
+  				<snapshots>
+  					<enabled>false</enabled>
+  				</snapshots>
+  				<id>bintray-caellian-caellian</id>
+  				<name>bintray</name>
+  				<url>http://dl.bintray.com/caellian/caellian</url>
+  			</repository>
+  		</repositories>
+  		<pluginRepositories>
+  			<pluginRepository>
+  				<snapshots>
+  					<enabled>false</enabled>
+  				</snapshots>
+  				<id>bintray-caellian-caellian</id>
+  				<name>bintray-plugins</name>
+  				<url>http://dl.bintray.com/caellian/caellian</url>
+  			</pluginRepository>
+  		</pluginRepositories>
+  		<id>bintray</id>
+  	</profile>
+  </profiles>
+  <activeProfiles>
+  	<activeProfile>bintray</activeProfile>
+  </activeProfiles>
+</settings>
+```
+Add this dependency:
+```xml
+<dependency>
+	<groupId>hr.caellian</groupId>
+	<artifactId>math</artifactId>
+	<version>1.0.0</version>
+	<type>pom</type>
+</dependency>
+```
+
 ##TODO List
 - [ ] Add Vectors and Matrices of other types.
 - [ ] Maybe add other content.
