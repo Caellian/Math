@@ -130,8 +130,8 @@
     </build>
 
     <scm>
-        <connection>scm:git@github.com:Caellian/CaellianMath.git</connection>
-        <developerConnection>scm:git@github.com:Caellian/CaellianMath.git</developerConnection>
-        <url>git@github.com:Caellian/CaellianMath.git</url>
+        <connection>scm:git:git://github.com/Caellian/CaellianMath.git</connection>
+        <developerConnection>scm:git:git@github.com:Caellian/CaellianMath.git</developerConnection>
+        <url>https://github.com/Caellian/Math</url>
     </scm>
 </project>
