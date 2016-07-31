@@ -1,13 +1,11 @@
 # Math
-[![Build Status](https://drone.io/github.com/Caellian/Math/status.png)](https://drone.io/github.com/Caellian/Math/latest) 
+[![Build Status](https://travis-ci.org/Caellian/Math.svg?branch=master)](https://travis-ci.org/Caellian/Math)
 [ ![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg) ](https://bintray.com/caellian/caellian/Math/_latestVersion) <br>
 Math library containing classes for matrix and vector calculation.
 
 ##Why did I create this library?
-I created this library because I couldn't find a single one I liked written in Java, let alone in Scala.
-I have no intentions of insulting other libraries, I just have a compulsive need to write my own version of code if
-I'm not completely happy with someone else's. Also, I believe there are currently no libraries out there for Java or
-languages extending it which support Vectors and Matrices of any dimension and are as simple as this one at the same time.
+I created this library because I couldn't find a single one I liked written in Java or Scala.
+I believe there are currently no libraries out there for Java or languages extending it which support Vectors and Matrices of any dimension and are as simple as this one at the same time.
 
 ##License & Documentation
 You can find license [here](https://github.com/Caellian/Math/blob/master/LICENSE.md) and documentation [here](http://caellian.github.io/Math/).
@@ -20,7 +18,7 @@ jcenter()
 ```
 After adding following statement to dependencies closure you are good to go:
 ```Groovy
-compile 'hr.caellian:math:1.0.+'
+compile 'hr.caellian:math:1.1.+'
 ```
 
 ###Maven
