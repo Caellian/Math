@@ -1,24 +1,17 @@
 #Ignore All
-/*
+*
 
 #Except:
 # Source Files
-!/src
-
-# License File
-!/LICENSE.md
+!src
 
 # GitHub Files
 !.gitignore
-!/*.md
+!*.md
 
 # Maven
-!/pom.xml
+!pom.xml
 
 # Gradle
-!/build.gradle
-!/build.properties
-!/settings.gradle
-!/gradle.properties
-!/gradlew*
-!/gradle
+!*gradle*
+.gradle
