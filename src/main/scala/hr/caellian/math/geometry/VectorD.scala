@@ -61,7 +61,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * In order to add to matrices together, they must be of same size.
     *
     * @param other vector to add to this one.
-    *
     * @return result of vector addition.
     */
   def +(other: VectorD): VectorD = {
@@ -74,7 +73,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * In order to subtract one vector from another, both vectors must be of same size.
     *
     * @param other vector to subtract from this one.
-    *
     * @return result of vector subtraction.
     */
   def -(other: VectorD): VectorD = {
@@ -87,7 +85,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * In order to add to multiply vectors together, they must be of same size.
     *
     * @param other vector to multiply with this one.
-    *
     * @return result of vector multiplication.
     */
   def *(other: VectorD): VectorD = {
@@ -100,7 +97,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * In order to divide one vector from another, both vectors must be of same size.
     *
     * @param other vector dividend.
-    *
     * @return result of vector division.
     */
   def /(other: VectorD): VectorD = {
@@ -112,7 +108,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Performs scalar addition on this vector and returns resulting vector.
     *
     * @param value scalar value.
-    *
     * @return result of scalar vector addition.
     */
   def +(value: Double): VectorD = {
@@ -123,7 +118,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Performs scalar subtraction on this vector and returns resulting vector.
     *
     * @param value scalar value.
-    *
     * @return result of scalar vector subtraction.
     */
   def -(value: Double): VectorD = {
@@ -134,7 +128,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Performs scalar multiplication on this vector and returns resulting vector.
     *
     * @param value scalar value.
-    *
     * @return result of scalar vector multiplication.
     */
   def *(value: Double): VectorD = {
@@ -145,7 +138,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Performs scalar division on this vector and returns resulting vector.
     *
     * @param value scalar value.
-    *
     * @return result of scalar vector division.
     */
   def /(value: Double): VectorD = {
@@ -154,7 +146,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
 
   /**
     * @param o other vector or object instance of type extending vector.
-    *
     * @return true if this vector is equal to other vector.
     */
   def ==(o: VectorD): Boolean = {
@@ -202,7 +193,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
   /**
     *
     * @param other other vector used to determine dot product.
-    *
     * @return dot product of two vectors
     */
   def dot(other: VectorD): Double = {
@@ -214,7 +204,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Returns cross product of this and other vector.
     *
     * @param other other vector used to determine cross product.
-    *
     * @return cross product.
     */
   def cross(other: VectorD): VectorD = {
@@ -256,8 +245,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * Linearly interpolates between two vectors.
     *
     * @param destination vector with destination coordinates.
-    * @param percent percentage of
-    *
+    * @param percent     percentage of
     * @return linear interpolation.
     */
   def lerp(destination: VectorD, percent: Double): VectorD = {
@@ -299,7 +287,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
 
   /**
     * @param o other vector or object instance of type extending vector.
-    *
     * @return true if this vector is equal to other vector.
     */
   override def equals(o: Any): Boolean = {
@@ -328,7 +315,6 @@ object VectorD {
     * Creates a new vector using given values.
     *
     * @param values values to create a new vector from.
-    *
     * @return created vector.
     */
   def apply(values: Double*): VectorD = {
@@ -339,7 +325,6 @@ object VectorD {
     * Creates a new vector using array values.
     *
     * @param values value array to create a new vector from.
-    *
     * @return created vector.
     */
   def apply(values: Array[Double]): VectorD = {
@@ -350,7 +335,6 @@ object VectorD {
     * Creates a new vector using buffer values.
     *
     * @param buffer buffer to create a new vector from.
-    *
     * @return created vector.
     */
   def apply(buffer: DoubleBuffer): VectorD = {

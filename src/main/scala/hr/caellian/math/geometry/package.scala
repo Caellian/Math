@@ -28,8 +28,8 @@ package hr.caellian.math
   * @author Caellian
   */
 package object geometry {
-	val X = 0
-	val Y = 1
-	val Z = 2
-	val W = 3
+  val X = 0
+  val Y = 1
+  val Z = 2
+  val W = 3
 }

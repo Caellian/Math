@@ -58,12 +58,11 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * In order to add to matrices together, they must be of same size.
     *
     * @param other matrix to add to this one.
-    *
     * @return resulting of matrix addition.
     */
   def +(other: MatrixD): MatrixD = {
     require(columnCount == other.columnCount && rowCount == other.rowCount, "Matrices must be of same size!")
-    new MatrixD((matrix zip other.matrix).map{case (rowA, rowB) => rowA zip rowB map Function.tupled(_ + _)})
+    new MatrixD((matrix zip other.matrix).map { case (rowA, rowB) => rowA zip rowB map Function.tupled(_ + _) })
   }
 
   /**
@@ -71,12 +70,11 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * In order to subtract one matrix from another, matrices must be of same size.
     *
     * @param other matrix to subtract from this one.
-    *
     * @return resulting of matrix subtraction.
     */
   def -(other: MatrixD): MatrixD = {
     require(columnCount == other.columnCount && rowCount == other.rowCount, "Matrices must be of same size!")
-    new MatrixD((matrix zip other.matrix).map{case (rowA, rowB) => rowA zip rowB map Function.tupled(_ - _)})
+    new MatrixD((matrix zip other.matrix).map { case (rowA, rowB) => rowA zip rowB map Function.tupled(_ - _) })
   }
 
   /**
@@ -84,11 +82,10 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * Returns C from 'C = A×B' where A is this matrix and B is the other / argument matrix.
     *
     * @param other matrix to multiply this matrix with.
-    *
     * @return result of matrix multiplication.
     */
   def *(other: MatrixD): MatrixD = {
-    require(columnCount == other.rowCount , s"Invalid multiplication ($rowCount x $columnCount) * (${other.rowCount} x ${other.columnCount})!")
+    require(columnCount == other.rowCount, s"Invalid multiplication ($rowCount x $columnCount) * (${other.rowCount} x ${other.columnCount})!")
     new MatrixD(for (row <- matrix) yield {
       for (col <- other.matrix.transpose) yield {
         (row zip col map Function.tupled(_ * _)).sum
@@ -97,10 +94,20 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
   }
 
   /**
+    * Performs matrix multiplication on this matrix.
+    * Returns C from 'C = A×B' where A is this matrix and B is the other / argument vector.
+    *
+    * @param other vector to multiply this matrix with.
+    * @return result of matrix multiplication.
+    */
+  def *(other: VectorD): VectorD = {
+    this * other.verticalMatrix toVector
+  }
+
+  /**
     * Performs scalar multiplication on this matrix and returns resulting matrix.
     *
     * @param scalar scalar to multiply every member of this matrix with.
-    *
     * @return result of scalar matrix multiplication.
     */
   def *(scalar: Double): MatrixD = {
@@ -128,6 +135,7 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * @return inverse matrix.
     */
   def inverse: MatrixD = {
+    //noinspection ScalaRedundantConversion
     new MatrixD(new LUDecomposition(new Array2DRowRealMatrix(asArray.map(_.map(_.toDouble)))).getSolver.getInverse.getData.map(_.map(_.toDouble)))
   }
 
@@ -136,7 +144,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     *
     * @param rowA row to be switched with rowB.
     * @param rowB row to be switched with rowA.
-    *
     * @return resulting matrix.
     */
   def switchRows(rowA: Int, rowB: Int): MatrixD = {
@@ -153,7 +160,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     *
     * @param row        row to multiply.
     * @param multiplier scalar to multiply rows entries with.
-    *
     * @return resulting matrix.
     */
   def multiplyRow(row: Int, multiplier: Double): MatrixD = {
@@ -173,7 +179,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * @param from       row to add to another row.
     * @param to         row to add another row to; data will be stored on this row.
     * @param multiplier scalar to multiply all members of added row with on addition. It equals to 1 by default.
-    *
     * @return new matrix.
     */
   def addRows(from: Int, to: Int, multiplier: Double = 1): MatrixD = {
@@ -190,7 +195,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     *
     * @param index index at which added row data will be stored.
     * @param data  row data to store at given index.
-    *
     * @return new matrix with extended data.
     */
   def withRow(index: Int, data: Array[Double]): MatrixD = {
@@ -204,7 +208,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     *
     * @param index index at which added column data will be stored.
     * @param data  column data to store at given index.
-    *
     * @return new matrix with extended data.
     */
   def withColumn(index: Int, data: Array[Double]): MatrixD = {
@@ -218,13 +221,12 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     *
     * @param deletedRows    rows to exclude from submatrix.
     * @param deletedColumns columns to exclude from submatrix.
-    *
     * @return defined submatrix.
     */
   def submatrix(deletedRows: Array[Int], deletedColumns: Array[Int]): MatrixD = {
     val result = Array.ofDim[Double](rowCount - deletedRows.count(rowCount >= _), columnCount - deletedColumns.count(columnCount >= _))
-    matrix.indices.filterNot(deletedRows contains _ + 1).zipWithIndex.foreach{ case (row, i) =>
-      matrix(0).indices.filterNot(deletedColumns contains _ + 1).zipWithIndex.foreach{ case (col, j) =>
+    matrix.indices.filterNot(deletedRows contains _ + 1).zipWithIndex.foreach { case (row, i) =>
+      matrix(0).indices.filterNot(deletedColumns contains _ + 1).zipWithIndex.foreach { case (col, j) =>
         result(i)(j) = matrix(row)(col)
       }
     }
@@ -272,7 +274,9 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * @return a new matrix containing only the first column of this matrix.
     */
   def firstColumn: MatrixD = {
-    new MatrixD(Array({ val result = asArray.transpose; result(0) }).transpose)
+    new MatrixD(Array({
+      val result = asArray.transpose; result(0)
+    }).transpose)
   }
 
   /**
@@ -316,7 +320,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
 
   /**
     * @param o other matrix or object instance of type extending matrix.
-    *
     * @return true if this matrix is equal to other matrix.
     */
   override def equals(o: Any): Boolean = {
@@ -335,7 +338,6 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * @param a     first argument.
     * @param b     second argument.
     * @param angle degrees to rotate in objects multiplied by this rotation matrix.
-    *
     * @return plane rotation matrix.
     */
   def initPlaneRotation(a: Int, b: Int, angle: Double): MatrixD = {
@@ -344,10 +346,10 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     for (x <- this.matrix.indices) {
       for (y <- this.matrix(0).indices) {
         val value = (y, x) match {
-          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle)).toDouble
+          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle))
+          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle))
           case _ => {
             if (x == y) {
               1
@@ -416,10 +418,9 @@ object MatrixD {
   /**
     * Creates a new matrix using buffer values.
     *
-    * @param buffer buffer to create a new matrix from.
-    * @param rowCount number of rows new matrix will have.
+    * @param buffer      buffer to create a new matrix from.
+    * @param rowCount    number of rows new matrix will have.
     * @param columnCount number of columns new matrix will have.
-    *
     * @return created matrix.
     */
   def apply(buffer: DoubleBuffer, rowCount: Int, columnCount: Int): MatrixD = {
@@ -430,7 +431,6 @@ object MatrixD {
     * Creates a new square matrix using buffer values.
     *
     * @param buffer buffer to create a new matrix from.
-    *
     * @return created matrix.
     */
   def apply(buffer: DoubleBuffer): MatrixD = {
@@ -449,7 +449,6 @@ object MatrixD {
     *                     position in all 'n' dimensions defined and there must be 'n-1'
     *                     points to define rotation simplex.
     * @param angle        degrees to rotate with objects multiplied by this rotation matrix.
-    *
     * @return rotation matrix.
     */
   def initRotation(rotationData: MatrixD, angle: Double): MatrixD = {
@@ -463,19 +462,19 @@ object MatrixD {
     v(0) = rotationData
     M(0) = MatrixD.initTranslationMatrix((-rotationData.firstRow.toVector).asArray).transpose
 
-    v(1) = (v(0).withColumn(n, Array.fill(n - 1)(1)) * M(0)).submatrix(Array(),Array(n + 1))
+    v(1) = (v(0).withColumn(n, Array.fill(n - 1)(1)) * M(0)).submatrix(Array(), Array(n + 1))
 
     val me = new MatrixD(M(0).matrix)
     var k = 1
     for (r <- 2 until n) {
       for (c <- n to r by -1) {
         k += 1
-        M(k - 1) = MatrixD(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1).matrix(r - 1)(c-1), v(k - 1).matrix(r - 1)(c - 2)).toDouble)
-        v(k) = (v(k - 1).withColumn(n, Array.fill(n - 1)(1)) * M(k - 1)).submatrix(Array(),Array(n + 1))
+        M(k - 1) = MatrixD(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1).matrix(r - 1)(c - 1), v(k - 1).matrix(r - 1)(c - 2)))
+        v(k) = (v(k - 1).withColumn(n, Array.fill(n - 1)(1)) * M(k - 1)).submatrix(Array(), Array(n + 1))
         me.matrix = (me * M(k - 1)).matrix
       }
     }
-    new MatrixD((me * MatrixD(n + 1).initPlaneRotation(n - 1, n, angle) * !me).submatrix(Array(n+1),Array(n+1)).matrix)
+    new MatrixD((me * MatrixD(n + 1).initPlaneRotation(n - 1, n, angle) * !me).submatrix(Array(n + 1), Array(n + 1)).matrix)
   }
 
   /**
@@ -491,12 +490,11 @@ object MatrixD {
     * Initializes a new translation matrix.
     *
     * @param location relative location.
-    *
     * @return translation matrix.
     */
   def initTranslationMatrix(location: Array[Double]): MatrixD = {
     new MatrixD(Array.tabulate[Double](location.length + 1, location.length + 1)((x,
-                                                                                 y) => {
+                                                                                  y) => {
       if (x == y) {
         1
       } else if (y == location.length && x < location.length) {
@@ -511,7 +509,6 @@ object MatrixD {
     * Initializes a new scaling matrix.
     *
     * @param scale scale.
-    *
     * @return scale matrix.
     */
   def initScalingMatrix(scale: Array[Double]): MatrixD = {
@@ -528,7 +525,6 @@ object MatrixD {
     * Initializes a new identity matrix.
     *
     * @param n matrix size.
-    *
     * @return identity matrix.
     */
   def initIdentityMatrix(n: Int): MatrixD = {
@@ -554,7 +550,6 @@ object Matrix2D {
     * Initializes rotation matrix using degrees.
     *
     * @param degrees Degrees to rotate objects multiplied by this matrix in positive direction.
-    *
     * @return rotation matrix
     */
   def initRotation(degrees: Double): MatrixD = {
@@ -563,10 +558,10 @@ object Matrix2D {
     }
 
     val result = Array.ofDim[Double](2, 2)
-    result(0)(0) = FastMath.cos(FastMath.toRadians(degrees)).toDouble
-    result(0)(1) = FastMath.sin(FastMath.toRadians(degrees)).toDouble
-    result(1)(0) = -FastMath.sin(FastMath.toRadians(degrees)).toDouble
-    result(1)(1) = FastMath.cos(FastMath.toRadians(degrees)).toDouble
+    result(0)(0) = FastMath.cos(FastMath.toRadians(degrees))
+    result(0)(1) = FastMath.sin(FastMath.toRadians(degrees))
+    result(1)(0) = -FastMath.sin(FastMath.toRadians(degrees))
+    result(1)(1) = FastMath.cos(FastMath.toRadians(degrees))
 
     new MatrixD(result)
   }
@@ -590,7 +585,6 @@ object Matrix2D {
     * Initializes a new 2x2 scaling matrix.
     *
     * @param scale scale.
-    *
     * @return scale matrix.
     */
   def initScalingMatrix(scale: Array[Double]): MatrixD = {
@@ -619,7 +613,6 @@ object Matrix3D {
     * @param forward forward vector
     * @param up      up vector
     * @param right   right vector
-    *
     * @return rotation matrix
     */
   def initRotationMatrix(forward: VectorD, up: VectorD, right: VectorD): MatrixD = {
@@ -632,20 +625,19 @@ object Matrix3D {
     * @param a     first argument.
     * @param b     second argument.
     * @param angle degrees to rotate in objects multiplied by this rotation matrix.
-    *
     * @return plane rotation matrix.
     */
   def initPlaneRotation(a: Int, b: Int, angle: Double): MatrixD = {
     val ai = a - 1
     val bi = b - 1
-    val matrix = Array.ofDim[Double](4,4)
+    val matrix = Array.ofDim[Double](4, 4)
     for (x <- matrix.indices) {
       for (y <- matrix(0).indices) {
         val value = (y, x) match {
-          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle)).toDouble
+          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle))
+          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle))
           case _ => {
             if (x == y) {
               1
@@ -666,7 +658,6 @@ object Matrix3D {
     * @param x degree rotation in x direction
     * @param y degree rotation in y direction
     * @param z degree rotation in z direction
-    *
     * @return rotation matrix
     */
   def initRotationMatrix(x: Double, y: Double, z: Double): MatrixD = {
@@ -680,7 +671,6 @@ object Matrix3D {
     * Initializes a new 3x3 scaling matrix.
     *
     * @param scale scale.
-    *
     * @return scale matrix.
     */
   def initScalingMatrix(scale: Array[Double]): MatrixD = {
@@ -698,13 +688,12 @@ object Matrix3D {
     * Initializes a new 3x3 translation matrix.
     *
     * @param location relative location.
-    *
     * @return translation matrix.
     */
   def initTranslationMatrix(location: Array[Double]): MatrixD = {
     assert(location.length == 2, "Translation must have 2 coordinates!")
     new MatrixD(Array.tabulate[Double](3, 3)((x,
-                                             y) => {
+                                              y) => {
       if (x == y) {
         1
       } else if (y == location.length && x < location.length) {
@@ -746,12 +735,11 @@ object Matrix4D {
     * @param aspectRatio aspect ration.
     * @param clipNear    front clipping position.
     * @param clipFar     back clipping position.
-    *
     * @return perspective transformation matrix.
     */
   def initPerspectiveMatrix(fov: Double, aspectRatio: Double, clipNear: Double, clipFar: Double): MatrixD = {
     val result = Array.ofDim[Double](4, 4)
-    val fowAngle: Double = FastMath.tan(fov / 2).toDouble
+    val fowAngle: Double = FastMath.tan(fov / 2)
     val clipRange: Double = clipNear - clipFar
     result(0)(0) = 1.0f / (fowAngle * aspectRatio)
     result(0)(1) = 0
@@ -781,7 +769,6 @@ object Matrix4D {
     * @param top      top clipping position.
     * @param clipNear front clipping position.
     * @param clipFar  back clipping position.
-    *
     * @return orthographic transformation matrix
     */
   def initOrthographicMatrix(left: Double,
@@ -819,7 +806,6 @@ object Matrix4D {
     *
     * @param forward forward 3f vector.
     * @param up      up 3f vector.
-    *
     * @return rotation matrix.
     */
   def initRotationMatrix(forward: VectorD, up: VectorD): MatrixD = {
@@ -835,7 +821,6 @@ object Matrix4D {
     * @param forward forward 3f vector.
     * @param up      up 3f vector.
     * @param right   right 3f vector.
-    *
     * @return rotation matrix.
     */
   def initRotationMatrix(forward: VectorD, up: VectorD, right: VectorD): MatrixD = {
@@ -865,20 +850,19 @@ object Matrix4D {
     * @param a     first argument.
     * @param b     second argument.
     * @param angle degrees to rotate in objects multiplied by this rotation matrix.
-    *
     * @return plane rotation matrix.
     */
   def initPlaneRotation(a: Int, b: Int, angle: Double): MatrixD = {
     val ai = a - 1
     val bi = b - 1
-    val matrix = Array.ofDim[Double](4,4)
+    val matrix = Array.ofDim[Double](4, 4)
     for (x <- matrix.indices) {
       for (y <- matrix(0).indices) {
         val value = (y, x) match {
-          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle)).toDouble
-          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle)).toDouble
-          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle)).toDouble
+          case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle))
+          case (`ai`, `bi`) => -FastMath.sin(FastMath.toRadians(angle))
+          case (`bi`, `ai`) => FastMath.sin(FastMath.toRadians(angle))
           case _ => {
             if (x == y) {
               1
@@ -897,7 +881,6 @@ object Matrix4D {
     * Initializes a new 4x4 scaling matrix.
     *
     * @param scale scale.
-    *
     * @return scale matrix.
     */
   def initScalingMatrix(scale: Array[Double]): MatrixD = {
@@ -915,13 +898,12 @@ object Matrix4D {
     * Initializes a new 4x4 translation matrix.
     *
     * @param location relative location.
-    *
     * @return translation matrix.
     */
   def initTranslationMatrix(location: Array[Double]): MatrixD = {
     assert(location.length == 3, "Translation must have 3 coordinates!")
     new MatrixD(Array.tabulate[Double](4, 4)((x,
-                                             y) => {
+                                              y) => {
       if (x == y) {
         1
       } else if (y == location.length && x < location.length) {

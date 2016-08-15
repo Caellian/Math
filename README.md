@@ -61,13 +61,13 @@ Add this dependency:
 <dependency>
 	<groupId>hr.caellian</groupId>
 	<artifactId>math</artifactId>
-	<version>[1.0.0,1.1.0)</version>
+	<version>[1.1.0,1.2.0)</version>
 	<type>pom</type>
 </dependency>
 ```
 
 ##TODO List
-- [ ] Add Vectors and Matrices of other types.
+- [X] Add Vectors and Matrices of other types.
 - [ ] Maybe add other content.
 - [ ] Create a nice website.
 

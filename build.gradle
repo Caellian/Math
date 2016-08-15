@@ -30,7 +30,7 @@ repositories {
     jcenter()
 }
 
-version = "1.1.0"
+version = "1.2.0"
 group= "hr.caellian.math"
 
 dependencies {
@@ -48,7 +48,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task scaladocJar(type: Jar, dependsOn: scaladoc) {
-    classifier = 'scaladoc'
+    classifier = 'javadoc'
     from scaladoc.destinationDir
 }
 

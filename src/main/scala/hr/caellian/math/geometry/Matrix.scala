@@ -37,58 +37,59 @@ import hr.caellian.math.util.Replicable
   */
 abstract class Matrix[T <: AnyVal] extends Replicable[Matrix[T]] {
 
-	/**
-	  * Matrix data.
-	  */
-	var matrix: Array[Array[T]]
+  /**
+    * Matrix data.
+    */
+  var matrix: Array[Array[T]]
 
-	/**
-	  * Number of rows in this matrix.
-	  */
-	val rowCount: Int
-	/**
-	  * Number of columns in this matrix.
-	  */
-	val columnCount: Int
+  /**
+    * Number of rows in this matrix.
+    */
+  val rowCount: Int
+  /**
+    * Number of columns in this matrix.
+    */
+  val columnCount: Int
 
-	/**
-	  * @param column outer array index.
-	  * @param row inner array index.
-	  * @return data stored at given column and row.
-	  */
-	def get(column: Int, row: Int): T = {
-		matrix(column)(row)
-	}
+  /**
+    * @param column outer array index.
+    * @param row    inner array index.
+    * @return data stored at given column and row.
+    */
+  def get(column: Int, row: Int): T = {
+    matrix(column)(row)
+  }
 
-	/**
-	  * @return 2D array containing data of this matrix.
-	  */
-	def asArray: Array[Array[T]] = {
-		matrix.clone()
-	}
-	/**
-	  * @return buffer containing data of this matrix.
-	  */
-	def asBuffer: Buffer
+  /**
+    * @return 2D array containing data of this matrix.
+    */
+  def asArray: Array[Array[T]] = {
+    matrix.clone()
+  }
 
-	/**
-	  * @return string representation of this matrix.
-	  */
-	override def toString: String = {
-		val builder = new StringBuilder()
+  /**
+    * @return buffer containing data of this matrix.
+    */
+  def asBuffer: Buffer
 
-		builder.append("{")
-		for (row <- matrix) {
-			builder.append("[")
-			for (it <- row) {
-				builder.append(s" $it ,")
-			}
-			builder.setLength(builder.lastIndexOf(","))
-			builder.append("],\n")
-		}
-		builder.setLength(builder.lastIndexOf(","))
-		builder.append("}")
+  /**
+    * @return string representation of this matrix.
+    */
+  override def toString: String = {
+    val builder = new StringBuilder()
 
-		builder.mkString
-	}
+    builder.append("{")
+    for (row <- matrix) {
+      builder.append("[")
+      for (it <- row) {
+        builder.append(s" $it ,")
+      }
+      builder.setLength(builder.lastIndexOf(","))
+      builder.append("],\n")
+    }
+    builder.setLength(builder.lastIndexOf(","))
+    builder.append("}")
+
+    builder.mkString
+  }
 }

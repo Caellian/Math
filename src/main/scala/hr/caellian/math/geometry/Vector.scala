@@ -36,39 +36,40 @@ import hr.caellian.math.util.Replicable
   */
 abstract class Vector[T <: AnyVal] extends Replicable[Vector[T]] {
 
-	/**
-	  * Vector data.
-	  */
-	val data: Array[T]
-	/**
-	  * Size of this vector.
-	  */
-	val size: Int
+  /**
+    * Vector data.
+    */
+  val data: Array[T]
+  /**
+    * Size of this vector.
+    */
+  val size: Int
 
-	/**
-	  * @return array containing data of this vector.
-	  */
-	def asArray: Array[T] = {
-		data.clone()
-	}
-	/**
-	  * @return buffer containing data of this vector.
-	  */
-	def asBuffer: Buffer
+  /**
+    * @return array containing data of this vector.
+    */
+  def asArray: Array[T] = {
+    data.clone()
+  }
 
-	/**
-	  * @return string representation of this vector.
-	  */
-	override def toString: String = {
-		val builder = new StringBuilder()
+  /**
+    * @return buffer containing data of this vector.
+    */
+  def asBuffer: Buffer
 
-		builder.append("(")
-		for (it <- this.data) {
-			builder.append(s"$it, ")
-		}
-		builder.setLength(builder.lastIndexOf(","))
-		builder.append(")")
+  /**
+    * @return string representation of this vector.
+    */
+  override def toString: String = {
+    val builder = new StringBuilder()
 
-		builder.mkString
-	}
+    builder.append("(")
+    for (it <- this.data) {
+      builder.append(s"$it, ")
+    }
+    builder.setLength(builder.lastIndexOf(","))
+    builder.append(")")
+
+    builder.mkString
+  }
 }
