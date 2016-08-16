@@ -25,7 +25,7 @@
 package hr.caellian.math.util
 
 /**
-  * A better version of {@link java.lang.Cloneable} actually containing {@link java.lang.Object#clone()}
+  * A better version of Cloneable actually containing clone method.
   *
   * @author Caellian
   */

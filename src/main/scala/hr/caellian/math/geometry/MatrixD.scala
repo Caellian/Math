@@ -31,11 +31,7 @@ import org.apache.commons.math3.linear.{Array2DRowRealMatrix, LUDecomposition}
 import org.apache.commons.math3.util.FastMath
 
 /**
-  * @author caellian
-  *         Created on 31/07/16 at 17:03 CET.
-  */
-/**
-  * Protected matrix class for {@link Double} N-dimensional matrices.
+  * Matrix class for double N-dimensional matrices.
   *
   * @author Caellian
   */
@@ -241,9 +237,9 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
   def toVector: VectorD = {
     require(columnCount == 1 || rowCount == 1 && !(columnCount > 1 && rowCount > 1), "Matrix cannot be turned into a vector!")
     if (columnCount > rowCount) {
-      new VectorD(firstRow.matrix(0))
+      new VectorD(firstRow(0))
     } else {
-      new VectorD(firstColumn.transpose.matrix(0))
+      new VectorD(firstColumn.transpose(0))
     }
   }
 
@@ -253,7 +249,7 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     * @return vector containing only first column of matrix data.
     */
   def forceToVector: VectorD = {
-    new VectorD(firstColumn.transpose.matrix(0))
+    new VectorD(firstColumn.transpose(0))
   }
 
   /**
@@ -344,7 +340,7 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
     val ai = a - 1
     val bi = b - 1
     for (x <- this.matrix.indices) {
-      for (y <- this.matrix(0).indices) {
+      for (y <- this(0).indices) {
         val value = (y, x) match {
           case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle))
           case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle))
@@ -358,7 +354,7 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
             }
           }
         }
-        this.matrix(y)(x) = value
+        this(y)(x) = value
       }
     }
     this
@@ -469,7 +465,7 @@ object MatrixD {
     for (r <- 2 until n) {
       for (c <- n to r by -1) {
         k += 1
-        M(k - 1) = MatrixD(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1).matrix(r - 1)(c - 1), v(k - 1).matrix(r - 1)(c - 2)))
+        M(k - 1) = MatrixD(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1)(r - 1)(c - 1), v(k - 1)(r - 1)(c - 2)))
         v(k) = (v(k - 1).withColumn(n, Array.fill(n - 1)(1)) * M(k - 1)).submatrix(Array(), Array(n + 1))
         me.matrix = (me * M(k - 1)).matrix
       }
@@ -825,17 +821,17 @@ object Matrix4D {
     */
   def initRotationMatrix(forward: VectorD, up: VectorD, right: VectorD): MatrixD = {
     val result = Array.ofDim[Double](4, 4)
-    result(0)(0) = right.data(X)
-    result(0)(1) = right.data(Y)
-    result(0)(2) = right.data(Z)
+    result(0)(0) = right(X)
+    result(0)(1) = right(Y)
+    result(0)(2) = right(Z)
     result(0)(3) = 0
-    result(1)(0) = up.data(X)
-    result(1)(1) = up.data(Y)
-    result(1)(2) = up.data(Y)
+    result(1)(0) = up(X)
+    result(1)(1) = up(Y)
+    result(1)(2) = up(Y)
     result(1)(3) = 0
-    result(2)(0) = forward.data(X)
-    result(2)(1) = forward.data(Y)
-    result(2)(2) = forward.data(Z)
+    result(2)(0) = forward(X)
+    result(2)(1) = forward(Y)
+    result(2)(2) = forward(Z)
     result(2)(3) = 0
     result(3)(0) = 0
     result(3)(1) = 0

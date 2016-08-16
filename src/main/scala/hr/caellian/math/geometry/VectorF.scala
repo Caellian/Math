@@ -30,7 +30,7 @@ import hr.caellian.math.util.Data
 import org.apache.commons.math3.util.FastMath
 
 /**
-  * Protected vector class for {@link Float} N-dimensional vectors.
+  * Vector class for float N-dimensional vectors.
   *
   * @author Caellian
   */
@@ -210,18 +210,18 @@ class VectorF(val data: Array[Float]) extends Vector[Float] {
     val result = Array.ofDim[Float](this.size)
     this.size match {
       case 7 => {
-        result(0) = this.data(1) * other.data(3) - this.data(3) * other.data(1) + this.data(2) * other.data(6) - this.data(6) * other.data(2) + this.data(4) * other.data(5) - this.data(5) * other.data(4)
-        result(1) = this.data(2) * other.data(4) - this.data(4) * other.data(2) + this.data(3) * other.data(0) - this.data(0) * other.data(3) + this.data(5) * other.data(6) - this.data(6) * other.data(5)
-        result(2) = this.data(3) * other.data(5) - this.data(5) * other.data(3) + this.data(4) * other.data(1) - this.data(1) * other.data(4) + this.data(6) * other.data(0) - this.data(0) * other.data(6)
-        result(3) = this.data(4) * other.data(6) - this.data(6) * other.data(4) + this.data(5) * other.data(2) - this.data(2) * other.data(5) + this.data(0) * other.data(1) - this.data(1) * other.data(0)
-        result(4) = this.data(5) * other.data(0) - this.data(0) * other.data(5) + this.data(6) * other.data(3) - this.data(3) * other.data(6) + this.data(1) * other.data(2) - this.data(2) * other.data(1)
-        result(5) = this.data(6) * other.data(1) - this.data(1) * other.data(6) + this.data(0) * other.data(4) - this.data(4) * other.data(0) + this.data(2) * other.data(3) - this.data(3) * other.data(2)
-        result(6) = this.data(0) * other.data(2) - this.data(2) * other.data(0) + this.data(1) * other.data(5) - this.data(5) * other.data(1) + this.data(3) * other.data(4) - this.data(4) * other.data(3)
+        result(X) = this(Y) * other(W) - this(W) * other(Y) + this(Z) * other(6) - this(6) * other(Z) + this(4) * other(5) - this(5) * other(4)
+        result(Y) = this(Z) * other(4) - this(4) * other(Z) + this(W) * other(X) - this(X) * other(W) + this(5) * other(6) - this(6) * other(5)
+        result(Z) = this(W) * other(5) - this(5) * other(W) + this(4) * other(Y) - this(Y) * other(4) + this(6) * other(X) - this(X) * other(6)
+        result(W) = this(4) * other(6) - this(6) * other(4) + this(5) * other(Z) - this(Z) * other(5) + this(X) * other(Y) - this(Y) * other(X)
+        result(4) = this(5) * other(X) - this(X) * other(5) + this(6) * other(W) - this(W) * other(6) + this(Y) * other(Z) - this(Z) * other(Y)
+        result(5) = this(6) * other(Y) - this(Y) * other(6) + this(X) * other(4) - this(4) * other(X) + this(Z) * other(W) - this(W) * other(Z)
+        result(6) = this(X) * other(Z) - this(Z) * other(X) + this(Y) * other(5) - this(5) * other(Y) + this(W) * other(4) - this(4) * other(W)
       }
       case 3 => {
-        result(0) = this.data(1) * other.data(2) - this.data(2) * other.data(1)
-        result(1) = this.data(2) * other.data(0) - this.data(0) * other.data(2)
-        result(2) = this.data(0) * other.data(1) - this.data(1) * other.data(0)
+        result(X) = this(Y) * other(Z) - this(Z) * other(Y)
+        result(Y) = this(Z) * other(X) - this(X) * other(Z)
+        result(Z) = this(X) * other(Y) - this(Y) * other(X)
       }
     }
     new VectorF(result)
@@ -391,5 +391,10 @@ object QuaternionF {
     }
 
     VectorF(x, y, z, w).normalized
+  }
+
+  def initRotationQuaternion(axis: VectorF, angle: Float): VectorF = {
+    val sinHalfAngle = Math.sin(angle / 2).toFloat
+    VectorF(axis(X) * sinHalfAngle, axis(Y) * sinHalfAngle, axis(Z) * sinHalfAngle, Math.cos(angle / 2).toFloat)
   }
 }

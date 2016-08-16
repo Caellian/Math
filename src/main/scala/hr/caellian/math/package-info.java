@@ -22,55 +22,7 @@
  *
  */
 
-package hr.caellian.math.geometry
-
-import java.nio._
-
-import hr.caellian.math.util.Replicable
-
 /**
-  * Generic Vector class created for stable code infrastructure and consistency.
-  * Most basic Vector variables and functions can be found here.
-  *
-  * @author Caellian
-  */
-abstract class Vector[T <: AnyVal] extends Replicable[Vector[T]] {
-  /**
-    * Vector data.
-    */
-  val data: Array[T]
-  /**
-    * Size of this vector.
-    */
-  val size: Int
-
-  def apply(index: Int): T = data(index)
-
-  /**
-    * @return array containing data of this vector.
-    */
-  def asArray: Array[T] = {
-    data.clone()
-  }
-
-  /**
-    * @return buffer containing data of this vector.
-    */
-  def asBuffer: Buffer
-
-  /**
-    * @return string representation of this vector.
-    */
-  override def toString: String = {
-    val builder = new StringBuilder()
-
-    builder.append("(")
-    for (it <- this.data) {
-      builder.append(s"$it, ")
-    }
-    builder.setLength(builder.lastIndexOf(","))
-    builder.append(")")
-
-    builder.mkString
-  }
-}
+ * Root package of Math library.
+ */
+package hr.caellian.math;

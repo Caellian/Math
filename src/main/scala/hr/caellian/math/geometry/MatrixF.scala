@@ -31,7 +31,7 @@ import org.apache.commons.math3.linear._
 import org.apache.commons.math3.util.FastMath
 
 /**
-  * Protected matrix class for {@link Float} N-dimensional matrices.
+  * Matrix class for float N-dimensional matrices.
   *
   * @author Caellian
   */
@@ -236,9 +236,9 @@ class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
   def toVector: VectorF = {
     require(columnCount == 1 || rowCount == 1 && !(columnCount > 1 && rowCount > 1), "Matrix cannot be turned into a vector!")
     if (columnCount > rowCount) {
-      new VectorF(firstRow.matrix(0))
+      new VectorF(firstRow(0))
     } else {
-      new VectorF(firstColumn.transpose.matrix(0))
+      new VectorF(firstColumn.transpose(0))
     }
   }
 
@@ -248,7 +248,7 @@ class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
     * @return vector containing only first column of matrix data.
     */
   def forceToVector: VectorF = {
-    new VectorF(firstColumn.transpose.matrix(0))
+    new VectorF(firstColumn.transpose(0))
   }
 
   /**
@@ -339,7 +339,7 @@ class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
     val ai = a - 1
     val bi = b - 1
     for (x <- this.matrix.indices) {
-      for (y <- this.matrix(0).indices) {
+      for (y <- this(0).indices) {
         val value = (y, x) match {
           case (`ai`, `ai`) => FastMath.cos(FastMath.toRadians(angle)).toFloat
           case (`bi`, `bi`) => FastMath.cos(FastMath.toRadians(angle)).toFloat
@@ -353,7 +353,7 @@ class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
             }
           }
         }
-        this.matrix(y)(x) = value
+        this(y)(x) = value
       }
     }
     this
@@ -464,7 +464,7 @@ object MatrixF {
     for (r <- 2 until n) {
       for (c <- n to r by -1) {
         k += 1
-        M(k - 1) = MatrixF(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1).matrix(r - 1)(c - 1), v(k - 1).matrix(r - 1)(c - 2)).toFloat)
+        M(k - 1) = MatrixF(n + 1).initPlaneRotation(c, c - 1, Math.atan2(v(k - 1)(r - 1)(c - 1), v(k - 1)(r - 1)(c - 2)).toFloat)
         v(k) = (v(k - 1).withColumn(n, Array.fill(n - 1)(1)) * M(k - 1)).submatrix(Array(), Array(n + 1))
         me.matrix = (me * M(k - 1)).matrix
       }
@@ -820,17 +820,17 @@ object Matrix4F {
     */
   def initRotationMatrix(forward: VectorF, up: VectorF, right: VectorF): MatrixF = {
     val result = Array.ofDim[Float](4, 4)
-    result(0)(0) = right.data(X)
-    result(0)(1) = right.data(Y)
-    result(0)(2) = right.data(Z)
+    result(0)(0) = right(X)
+    result(0)(1) = right(Y)
+    result(0)(2) = right(Z)
     result(0)(3) = 0
-    result(1)(0) = up.data(X)
-    result(1)(1) = up.data(Y)
-    result(1)(2) = up.data(Y)
+    result(1)(0) = up(X)
+    result(1)(1) = up(Y)
+    result(1)(2) = up(Y)
     result(1)(3) = 0
-    result(2)(0) = forward.data(X)
-    result(2)(1) = forward.data(Y)
-    result(2)(2) = forward.data(Z)
+    result(2)(0) = forward(X)
+    result(2)(1) = forward(Y)
+    result(2)(2) = forward(Z)
     result(2)(3) = 0
     result(3)(0) = 0
     result(3)(1) = 0

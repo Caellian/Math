@@ -51,6 +51,8 @@ abstract class Matrix[T <: AnyVal] extends Replicable[Matrix[T]] {
     */
   val columnCount: Int
 
+  def apply(row: Int): Array[T] = matrix(row)
+
   /**
     * @param column outer array index.
     * @param row    inner array index.
