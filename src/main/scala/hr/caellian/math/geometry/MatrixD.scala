@@ -329,7 +329,7 @@ class MatrixD(var matrix: Array[Array[Double]]) extends Matrix[Double] {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -616,7 +616,7 @@ object Matrix3D {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -737,12 +737,12 @@ object Matrix4D {
     val result = Array.ofDim[Double](4, 4)
     val fowAngle: Double = FastMath.tan(fov / 2)
     val clipRange: Double = clipNear - clipFar
-    result(0)(0) = 1.0f / (fowAngle * aspectRatio)
+    result(0)(0) = 1.0d / (fowAngle * aspectRatio)
     result(0)(1) = 0
     result(0)(2) = 0
     result(0)(3) = 0
     result(1)(0) = 0
-    result(1)(1) = 1.0f / fowAngle
+    result(1)(1) = 1.0d / fowAngle
     result(1)(2) = 0
     result(1)(3) = 0
     result(2)(0) = 0
@@ -841,7 +841,27 @@ object Matrix4D {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes rotation matrix using a rotation quaternion.
+    *
+    * @param quaternion quaternion to use for initialization.
+    * @return rotation matrix.
+    */
+  def initRotationMatrix(quaternion: VectorD): MatrixD = {
+    val forward = VectorD(2.0d * (quaternion(0) * quaternion(2) - quaternion(3) * quaternion(1)),
+      2.0d * (quaternion(1) * quaternion(2) + quaternion(3) * quaternion(0)),
+      1.0d - 2.0d * (quaternion(0) * quaternion(0) + quaternion(1) * quaternion(1)))
+    val up = VectorD(2.0d * (quaternion(0) * quaternion(1) + quaternion(3) * quaternion(2)),
+      1.0d - 2.0d * (quaternion(0) * quaternion(0) + quaternion(2) * quaternion(2)),
+      2.0d * (quaternion(1) * quaternion(2) - quaternion(3) * quaternion(0)))
+    val right = VectorD(1.0d - 2.0d * (quaternion(1) * quaternion(1) + quaternion(2) * quaternion(2)),
+      2.0d * (quaternion(0) * quaternion(1) - quaternion(3) * quaternion(2)),
+      2.0d * (quaternion(0) * quaternion(2) + quaternion(3) * quaternion(1)))
+
+    Matrix4D.initRotationMatrix(forward,up,right)
+  }
+
+  /**
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.

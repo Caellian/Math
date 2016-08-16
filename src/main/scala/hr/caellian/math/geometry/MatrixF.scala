@@ -328,7 +328,7 @@ class MatrixF(var matrix: Array[Array[Float]]) extends Matrix[Float] {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -615,7 +615,7 @@ object Matrix3F {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -840,7 +840,27 @@ object Matrix4F {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes rotation matrix using a rotation quaternion.
+    *
+    * @param quaternion quaternion to use for initialization.
+    * @return rotation matrix.
+    */
+  def initRotationMatrix(quaternion: VectorF): MatrixF = {
+    val forward = VectorF(2.0f * (quaternion(0) * quaternion(2) - quaternion(3) * quaternion(1)),
+      2.0f * (quaternion(1) * quaternion(2) + quaternion(3) * quaternion(0)),
+      1.0f - 2.0f * (quaternion(0) * quaternion(0) + quaternion(1) * quaternion(1)))
+    val up = VectorF(2.0f * (quaternion(0) * quaternion(1) + quaternion(3) * quaternion(2)),
+      1.0f - 2.0f * (quaternion(0) * quaternion(0) + quaternion(2) * quaternion(2)),
+      2.0f * (quaternion(1) * quaternion(2) - quaternion(3) * quaternion(0)))
+    val right = VectorF(1.0f - 2.0f * (quaternion(1) * quaternion(1) + quaternion(2) * quaternion(2)),
+      2.0f * (quaternion(0) * quaternion(1) - quaternion(3) * quaternion(2)),
+      2.0f * (quaternion(0) * quaternion(2) + quaternion(3) * quaternion(1)))
+
+    Matrix4F.initRotationMatrix(forward,up,right)
+  }
+
+  /**
+    * Initializes this matrix into a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.

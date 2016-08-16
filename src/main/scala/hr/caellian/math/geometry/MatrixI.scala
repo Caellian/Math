@@ -328,7 +328,7 @@ class MatrixI(var matrix: Array[Array[Int]]) extends Matrix[Int] {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -615,7 +615,7 @@ object Matrix3I {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
@@ -840,7 +840,27 @@ object Matrix4I {
   }
 
   /**
-    * Turns this matrix into a rotation matrix.
+    * Initializes rotation matrix using a rotation quaternion.
+    *
+    * @param quaternion quaternion to use for initialization.
+    * @return rotation matrix.
+    */
+  def initRotationMatrix(quaternion: VectorI): MatrixI = {
+    val forward = VectorI(2 * (quaternion(0) * quaternion(2) - quaternion(3) * quaternion(1)),
+      2 * (quaternion(1) * quaternion(2) + quaternion(3) * quaternion(0)),
+      1 - 2 * (quaternion(0) * quaternion(0) + quaternion(1) * quaternion(1)))
+    val up = VectorI(2 * (quaternion(0) * quaternion(1) + quaternion(3) * quaternion(2)),
+      1 - 2 * (quaternion(0) * quaternion(0) + quaternion(2) * quaternion(2)),
+      2 * (quaternion(1) * quaternion(2) - quaternion(3) * quaternion(0)))
+    val right = VectorI(1 - 2 * (quaternion(1) * quaternion(1) + quaternion(2) * quaternion(2)),
+      2 * (quaternion(0) * quaternion(1) - quaternion(3) * quaternion(2)),
+      2 * (quaternion(0) * quaternion(2) + quaternion(3) * quaternion(1)))
+
+    Matrix4I.initRotationMatrix(forward,up,right)
+  }
+
+  /**
+    * Initializes a rotation matrix.
     *
     * @param a     first argument.
     * @param b     second argument.
