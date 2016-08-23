@@ -27,7 +27,8 @@ package hr.caellian.math
 /**
   * @author Caellian
   */
-package object geometry {
+package object matrix {
+  // Dimension indices
   val X = 0
   val Y = 1
   val Z = 2

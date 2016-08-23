@@ -22,41 +22,33 @@
  *
  */
 
-apply plugin: 'scala'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
+package hr.caellian.math.util
 
-repositories {
-    jcenter()
-}
+import hr.caellian.math.matrix.MatrixD
+import org.apache.commons.math3.linear.{Array2DRowRealMatrix, LUDecomposition}
 
-version = "2.0.0"
-group= "hr.caellian.math"
+/**
+  *
+  */
+object InverseTest extends App {
+  val startingArrayOur: Array[Array[Double]] = Array(Array(2d, 5d, 3d, 9d), Array(3d, 2d, 6d, 2d), Array(5d, 8d, 1d, 2d), Array(5d, 4d, 2d, 0d))
+  val startingArrayApache: Array[Array[Double]] = Array(Array(2d, 5d, 3d, 9d), Array(3d, 2d, 6d, 2d), Array(5d, 8d, 1d, 2d), Array(5d, 4d, 2d, 0d))
 
-dependencies {
-    compile 'org.scala-lang:scala-library:2.12.+'
+  val our = MatrixD(startingArrayOur)
+  val ourTimer = System.currentTimeMillis()
+  val ourInverse = our.inverse()
+  val ourTime = System.currentTimeMillis() - ourTimer
 
-    testCompile 'org.apache.commons:commons-math3:3.6'
-}
+  val apache = new Array2DRowRealMatrix(startingArrayApache)
+  val apacheTimer = System.currentTimeMillis()
+  val apacheInverse = new LUDecomposition(apache).getSolver.getInverse
+  val apacheTime = System.currentTimeMillis() - apacheTimer
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
+  println("Our inverse:")
+  println(ourInverse)
+  println("Our time: " + ourTime + "ms")
 
-task scaladocJar(type: Jar, dependsOn: scaladoc) {
-    classifier = 'javadoc'
-    from scaladoc.destinationDir
-}
-
-task prepareRelease(type: Sync, dependsOn: build) {
-    from "$buildDir/libs"
-    from 'pom.xml'
-    into 'release'
-    rename ('pom.xml', "${rootProject.name}-${version}.pom")
-}
-
-artifacts {
-    archives sourcesJar
-    archives scaladocJar
+  println("Apache inverse:")
+  println(apacheInverse)
+  println("Apache time: " + apacheTime + "ms")
 }

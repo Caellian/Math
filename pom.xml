@@ -28,10 +28,10 @@
 
     <groupId>hr.caellian</groupId>
     <artifactId>math</artifactId>
-    <version>1.3.1</version>
+    <version>2.0.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Math library containing classes for matrix and vector calculation.</description>
+    <description>Math library containing utilities for geometrical calculation.</description>
     <url>http://caellian.github.io/CaellianMath/</url>
     <inceptionYear>2016</inceptionYear>
 
@@ -55,8 +55,8 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.11.5</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
+        <scala.version>2.12.0-M5</scala.version>
+        <scala.compat.version>2.12</scala.compat.version>
     </properties>
 
     <dependencies>
@@ -64,11 +64,6 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6</version>
         </dependency>
 
         <!-- Test -->
@@ -79,15 +74,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.specs2</groupId>
-            <artifactId>specs2-core_${scala.compat.version}</artifactId>
-            <version>2.4.16</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.compat.version}</artifactId>
-            <version>2.2.4</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

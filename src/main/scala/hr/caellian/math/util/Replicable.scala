@@ -30,8 +30,8 @@ package hr.caellian.math.util
   * @author Caellian
   */
 trait Replicable[T] {
-	/**
-	  * @return clone of T type.
-	  */
-	def replicate(): T
+  /**
+    * @return clone of T type.
+    */
+  def replicated: T
 }

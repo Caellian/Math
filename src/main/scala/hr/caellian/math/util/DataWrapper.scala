@@ -22,55 +22,25 @@
  *
  */
 
-package hr.caellian.math.geometry
-
-import java.nio._
-
-import hr.caellian.math.util.Replicable
+package hr.caellian.math.util
 
 /**
-  * Generic Vector class created for stable code infrastructure and consistency.
-  * Most basic Vector variables and functions can be found here.
+  * Objects implementing this trait act as utility wrappers for data provided by data variable.
   *
-  * @author Caellian
+  * @tparam C type of wrapper.
+  * @tparam T type contained in wrapper.
   */
-abstract class Vector[T <: AnyVal] extends Replicable[Vector[T]] {
+trait DataWrapper[C <: DataWrapper[C, T], T] {
   /**
-    * Vector data.
+    * Wrapped data.
     */
-  val data: Array[T]
-  /**
-    * Size of this vector.
-    */
-  val size: Int
-
-  def apply(index: Int): T = data(index)
+  val data: T
 
   /**
-    * @return array containing data of this vector.
+    * Creates a new instance of wrapper containing given data.
+    *
+    * @param data data of new wrapper.
+    * @return new instance of wrapper containing argument data.
     */
-  def asArray: Array[T] = {
-    data.clone()
-  }
-
-  /**
-    * @return buffer containing data of this vector.
-    */
-  def asBuffer: Buffer
-
-  /**
-    * @return string representation of this vector.
-    */
-  override def toString: String = {
-    val builder = new StringBuilder()
-
-    builder.append("(")
-    for (it <- this.data) {
-      builder.append(s"$it, ")
-    }
-    builder.setLength(builder.lastIndexOf(","))
-    builder.append(")")
-
-    builder.mkString
-  }
+  def withData(data: T): C
 }

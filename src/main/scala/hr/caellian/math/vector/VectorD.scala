@@ -22,12 +22,12 @@
  *
  */
 
-package hr.caellian.math.geometry
+package hr.caellian.math.vector
 
 import java.nio.{Buffer, ByteBuffer, ByteOrder, DoubleBuffer}
 
-import hr.caellian.math.util.Data
-import org.apache.commons.math3.util.FastMath
+import hr.caellian.math.matrix.{Matrix, MatrixD}
+import hr.caellian.math.util.DataUtil
 
 /**
   * @author caellian
@@ -38,19 +38,9 @@ import org.apache.commons.math3.util.FastMath
   *
   * @author Caellian
   */
-class VectorD(val data: Array[Double]) extends Vector[Double] {
-
-  val size = data.length
-
+class VectorD(override val data: Array[Double]) extends Vector[Double] {
   /**
-    * @return this vector.
-    */
-  def unary_+ = {
-    this
-  }
-
-  /**
-    * @return new vector with all data negated.
+    * @return new conjugated vector.
     */
   def unary_- = {
     new VectorD(asArray.map(-_))
@@ -63,7 +53,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other vector to add to this one.
     * @return result of vector addition.
     */
-  def +(other: VectorD): VectorD = {
+  def +(other: Vector[Double]): VectorD = {
     require(size == other.size, "Invalid argument vector size!")
     new VectorD(data zip other.data map Function.tupled(_ + _))
   }
@@ -75,7 +65,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other vector to subtract from this one.
     * @return result of vector subtraction.
     */
-  def -(other: VectorD): VectorD = {
+  def -(other: Vector[Double]): VectorD = {
     require(size == other.size, "Invalid argument vector size!")
     new VectorD(data zip other.data map Function.tupled(_ - _))
   }
@@ -87,7 +77,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other vector to multiply with this one.
     * @return result of vector multiplication.
     */
-  def *(other: VectorD): VectorD = {
+  def *(other: Vector[Double]): VectorD = {
     require(size == other.size, "Invalid argument vector size!")
     new VectorD(data zip other.data map Function.tupled(_ * _))
   }
@@ -99,7 +89,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other vector dividend.
     * @return result of vector division.
     */
-  def /(other: VectorD): VectorD = {
+  def /(other: Vector[Double]): VectorD = {
     require(size == other.size, "Invalid argument vector size!")
     new VectorD(data zip other.data map Function.tupled(_ / _))
   }
@@ -145,14 +135,6 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
   }
 
   /**
-    * @param o other vector or object instance of type extending vector.
-    * @return true if this vector is equal to other vector.
-    */
-  def ==(o: VectorD): Boolean = {
-    equals(o)
-  }
-
-  /**
     * @return max value of member of this vector.
     */
   def max: Double = {
@@ -162,8 +144,8 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
   /**
     * @return new vector containing absolute values of this vector.
     */
-  def abs: VectorD = {
-    new VectorD(asArray.map(FastMath.abs))
+  def absolute: VectorD = {
+    new VectorD(asArray.map(Math.abs))
   }
 
   /**
@@ -186,8 +168,8 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other vector to calculate distance to.
     * @return distance between this and other vector.
     */
-  def distanceTo(other: VectorD): Double = {
-    FastMath.sqrt(this dot other).toDouble
+  def distanceTo(other: Vector[Double]): Double = {
+    Math.sqrt(this dot other)
   }
 
   /**
@@ -195,7 +177,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other other vector used to determine dot product.
     * @return dot product of two vectors
     */
-  def dot(other: VectorD): Double = {
+  def dot(other: Vector[Double]): Double = {
     require(size == other.size, "Vectors must be of same size.")
     (data zip other.data map Function.tupled(_ * _)).sum
   }
@@ -206,27 +188,25 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param other other vector used to determine cross product.
     * @return cross product.
     */
-  def cross(other: VectorD): VectorD = {
+  def cross(other: Vector[Double]): VectorD = {
     require(size == other.size, "Vectors must be of same size.")
-    // Some cross product improvisations do exist for 2D space, but they are mathematically incorrect.
+    // Some cross product analogs do exist for 2D space, but they are inconsistent.
     require(size == 7 || size == 3, s"Cross product does not exist in $size-dimensional space!")
 
     val result = Array.ofDim[Double](this.size)
     this.size match {
-      case 7 => {
-        result(X) = this(Y) * other(W) - this(W) * other(Y) + this(Z) * other(6) - this(6) * other(Z) + this(4) * other(5) - this(5) * other(4)
-        result(Y) = this(Z) * other(4) - this(4) * other(Z) + this(W) * other(X) - this(X) * other(W) + this(5) * other(6) - this(6) * other(5)
-        result(Z) = this(W) * other(5) - this(5) * other(W) + this(4) * other(Y) - this(Y) * other(4) + this(6) * other(X) - this(X) * other(6)
-        result(W) = this(4) * other(6) - this(6) * other(4) + this(5) * other(Z) - this(Z) * other(5) + this(X) * other(Y) - this(Y) * other(X)
-        result(4) = this(5) * other(X) - this(X) * other(5) + this(6) * other(W) - this(W) * other(6) + this(Y) * other(Z) - this(Z) * other(Y)
-        result(5) = this(6) * other(Y) - this(Y) * other(6) + this(X) * other(4) - this(4) * other(X) + this(Z) * other(W) - this(W) * other(Z)
-        result(6) = this(X) * other(Z) - this(Z) * other(X) + this(Y) * other(5) - this(5) * other(Y) + this(W) * other(4) - this(4) * other(W)
-      }
-      case 3 => {
-        result(X) = this(Y) * other(Z) - this(Z) * other(Y)
-        result(Y) = this(Z) * other(X) - this(X) * other(Z)
-        result(Z) = this(X) * other(Y) - this(Y) * other(X)
-      }
+      case 7 =>
+        result(X) = this (Y) * other(W) - this (W) * other(Y) + this (Z) * other(6) - this (6) * other(Z) + this (4) * other(5) - this (5) * other(4)
+        result(Y) = this (Z) * other(4) - this (4) * other(Z) + this (W) * other(X) - this (X) * other(W) + this (5) * other(6) - this (6) * other(5)
+        result(Z) = this (W) * other(5) - this (5) * other(W) + this (4) * other(Y) - this (Y) * other(4) + this (6) * other(X) - this (X) * other(6)
+        result(W) = this (4) * other(6) - this (6) * other(4) + this (5) * other(Z) - this (Z) * other(5) + this (X) * other(Y) - this (Y) * other(X)
+        result(4) = this (5) * other(X) - this (X) * other(5) + this (6) * other(W) - this (W) * other(6) + this (Y) * other(Z) - this (Z) * other(Y)
+        result(5) = this (6) * other(Y) - this (Y) * other(6) + this (X) * other(4) - this (4) * other(X) + this (Z) * other(W) - this (W) * other(Z)
+        result(6) = this (X) * other(Z) - this (Z) * other(X) + this (Y) * other(5) - this (5) * other(Y) + this (W) * other(4) - this (4) * other(W)
+      case 3 =>
+        result(X) = this (Y) * other(Z) - this (Z) * other(Y)
+        result(Y) = this (Z) * other(X) - this (X) * other(Z)
+        result(Z) = this (X) * other(Y) - this (Y) * other(X)
     }
     new VectorD(result)
   }
@@ -237,8 +217,8 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param rotationMatrix rotation matrix to use.
     * @return rotated vector.
     */
-  def rotated(rotationMatrix: MatrixD): VectorD = {
-    (rotationMatrix * verticalMatrix).toVector
+  def rotated(rotationMatrix: Matrix[Double]): VectorD = {
+    (rotationMatrix * verticalMatrix).toVector.asInstanceOf[VectorD]
   }
 
   /**
@@ -248,7 +228,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @param percent     percentage of
     * @return linear interpolation.
     */
-  def lerp(destination: VectorD, percent: Double): VectorD = {
+  def lerp(destination: Vector[Double], percent: Double): VectorD = {
     this + (destination - this) * percent
   }
 
@@ -272,9 +252,15 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
   /**
     * @return clone of this vector.
     */
-  override def replicate(): VectorD = {
-    new VectorD(asArray)
-  }
+  override def replicated: VectorD = new VectorD(asArray)
+
+  /**
+    * Creates a new instance of wrapper containing given data.
+    *
+    * @param data data of new wrapper.
+    * @return new instance of wrapper containing argument data.
+    */
+  override def withData(data: Array[Double]): VectorD = new VectorD(data)
 
   /**
     * Vector hashcode depends on vector data and will change is vector data is modified!
@@ -282,22 +268,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
     * @return hashcode of this vector.
     */
   override def hashCode: Int = {
-    Data.hashCode(data)
-  }
-
-  /**
-    * @param o other vector or object instance of type extending vector.
-    * @return true if this vector is equal to other vector.
-    */
-  override def equals(o: Any): Boolean = {
-    if (this == o) {
-      return true
-    }
-    if (!o.isInstanceOf[VectorD]) {
-      return false
-    }
-    val vector = o.asInstanceOf[VectorD]
-    data sameElements vector.data
+    DataUtil.hashCode(data)
   }
 }
 
@@ -309,7 +280,7 @@ class VectorD(val data: Array[Double]) extends Vector[Double] {
   * @author Caellian
   */
 object VectorD {
-  type VecF = VectorD
+  type VecD = VectorD
 
   /**
     * Creates a new vector using given values.
@@ -342,63 +313,4 @@ object VectorD {
   }
 }
 
-/**
-  * Object containing utility functions for quaternion initialization.
-  *
-  * @author Caellian
-  */
-object QuaternionD {
-  /**
-    * Creates a new quaternion (4D vector) using {@link VectorD} class from
-    * given rotation matrix.
-    *
-    * @param rotationMatrix rotation matrix to use for quaternion creation.
-    * @return resulting quaternion.
-    */
-  def fromRotationMatrix(rotationMatrix: MatrixD): VectorD = {
-    assert(rotationMatrix.matrix.length == 4 && rotationMatrix.matrix.forall(_.length == 4), "")
-    var x = 0d
-    var y = 0d
-    var z = 0d
-    var w = 0d
-    val trace: Double = rotationMatrix.get(0, 0) + rotationMatrix.get(1, 1) + rotationMatrix.get(2, 2)
 
-    if (trace > 0) {
-      val s: Double = 0.5f / FastMath.sqrt(trace + 1.0f)
-      x = 0.25f / s
-      y = (rotationMatrix.get(1, 2) - rotationMatrix.get(2, 1)) * s
-      z = (rotationMatrix.get(2, 0) - rotationMatrix.get(0, 2)) * s
-      w = (rotationMatrix.get(0, 1) - rotationMatrix.get(1, 0)) * s
-    }
-    else {
-      if (rotationMatrix.get(0, 0) > rotationMatrix.get(1, 1) && rotationMatrix.get(0, 0) > rotationMatrix.get(2, 2)) {
-        val s: Double = 2.0f * FastMath.sqrt(1.0f + rotationMatrix.get(0, 0) - rotationMatrix.get(1, 1) - rotationMatrix.get(2, 2))
-        x = (rotationMatrix.get(1, 2) - rotationMatrix.get(2, 1)) / s
-        y = 0.25f * s
-        z = (rotationMatrix.get(1, 0) + rotationMatrix.get(0, 1)) / s
-        w = (rotationMatrix.get(2, 0) + rotationMatrix.get(0, 2)) / s
-      }
-      else if (rotationMatrix.get(1, 1) > rotationMatrix.get(2, 2)) {
-        val s: Double = 2.0f * FastMath.sqrt(1.0f + rotationMatrix.get(1, 1) - rotationMatrix.get(0, 0) - rotationMatrix.get(2, 2))
-        x = (rotationMatrix.get(2, 0) - rotationMatrix.get(0, 2)) / s
-        y = (rotationMatrix.get(1, 0) + rotationMatrix.get(0, 1)) / s
-        z = 0.25f * s
-        w = (rotationMatrix.get(2, 1) + rotationMatrix.get(1, 2)) / s
-      }
-      else {
-        val s: Double = 2.0f * FastMath.sqrt(1.0f + rotationMatrix.get(2, 2) - rotationMatrix.get(0, 0) - rotationMatrix.get(1, 1))
-        x = (rotationMatrix.get(0, 1) - rotationMatrix.get(1, 0)) / s
-        y = (rotationMatrix.get(2, 0) + rotationMatrix.get(0, 2)) / s
-        z = (rotationMatrix.get(1, 2) + rotationMatrix.get(2, 1)) / s
-        w = 0.25f * s
-      }
-    }
-
-    VectorD(x, y, z, w).normalized
-  }
-
-  def initRotationQuaternion(axis: VectorD, angle: Double): VectorD = {
-    val sinHalfAngle = Math.sin(angle / 2)
-    VectorD(axis(X) * sinHalfAngle, axis(Y) * sinHalfAngle, axis(Z) * sinHalfAngle, Math.cos(angle / 2))
-  }
-}

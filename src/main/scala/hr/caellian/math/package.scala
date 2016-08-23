@@ -22,7 +22,15 @@
  *
  */
 
+package hr.caellian
+
 /**
- * Package containing geometry related math classes.
- */
-package hr.caellian.math.geometry;
+  * @author Caellian
+  */
+package object math {
+  // Dimension indices
+  val X = 0
+  val Y = 1
+  val Z = 2
+  val W = 3
+}

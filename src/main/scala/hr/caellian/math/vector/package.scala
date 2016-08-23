@@ -22,41 +22,15 @@
  *
  */
 
-apply plugin: 'scala'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
+package hr.caellian.math
 
-repositories {
-    jcenter()
-}
-
-version = "2.0.0"
-group= "hr.caellian.math"
-
-dependencies {
-    compile 'org.scala-lang:scala-library:2.12.+'
-
-    testCompile 'org.apache.commons:commons-math3:3.6'
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task scaladocJar(type: Jar, dependsOn: scaladoc) {
-    classifier = 'javadoc'
-    from scaladoc.destinationDir
-}
-
-task prepareRelease(type: Sync, dependsOn: build) {
-    from "$buildDir/libs"
-    from 'pom.xml'
-    into 'release'
-    rename ('pom.xml', "${rootProject.name}-${version}.pom")
-}
-
-artifacts {
-    archives sourcesJar
-    archives scaladocJar
+/**
+  * @author Caellian
+  */
+package object vector {
+  // Dimension indices
+  val X = 0
+  val Y = 1
+  val Z = 2
+  val W = 3
 }
