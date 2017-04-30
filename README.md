@@ -1,6 +1,8 @@
 # Math
 [![Build Status](https://travis-ci.org/Caellian/Math.svg?branch=master)](https://travis-ci.org/Caellian/Math)
-[![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg)](https://bintray.com/caellian/caellian/Math/_latestVersion) <br>
+[![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg)](https://bintray.com/caellian/caellian/Math/_latestVersion)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+<br>
 Math library containing classes for matrix and vector calculation.
 
 ## Why did I create this library?
@@ -18,7 +20,7 @@ jcenter()
 ```
 After adding following statement to dependencies closure you are good to go:
 ```Groovy
-compile 'hr.caellian:math:1.3.+'
+compile 'hr.caellian:math:2.0.+'
 ```
 
 ### Maven
@@ -61,7 +63,7 @@ Add this dependency:
 <dependency>
 	<groupId>hr.caellian</groupId>
 	<artifactId>math</artifactId>
-	<version>[1.3.0,1.4.0)</version>
+	<version>[2.0.0,2.1.0)</version>
 	<type>pom</type>
 </dependency>
 ```

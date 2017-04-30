@@ -29,6 +29,7 @@
     <groupId>hr.caellian</groupId>
     <artifactId>math</artifactId>
     <version>2.0.0</version>
+    <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Math library containing utilities for geometrical calculation.</description>
@@ -48,6 +49,8 @@
             <id>caellian</id>
             <name>Tin Svagelj</name>
             <email>tin.svagelj.email@gmail.com</email>
+            <organization>Caellian</organization>
+            <organizationUrl>https://github.com/Caellian</organizationUrl>
         </developer>
     </developers>
 
