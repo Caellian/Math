@@ -37,8 +37,8 @@
 
     <licenses>
         <license>
-            <name>GPL</name>
-            <url>http://www.gnu.org/licenses/gpl-3.0.en.html</url>
+            <name>MIT</name>
+            <url>https://github.com/Caellian/Math/blob/master/LICENSE.md</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -125,8 +125,8 @@
     </build>
 
     <scm>
-        <connection>scm:git:git://github.com/Caellian/CaellianMath.git</connection>
-        <developerConnection>scm:git:git@github.com:Caellian/CaellianMath.git</developerConnection>
+        <connection>scm:git:git://github.com/Caellian/Math.git</connection>
+        <developerConnection>scm:git:git@github.com:Caellian/Math.git</developerConnection>
         <url>https://github.com/Caellian/Math</url>
     </scm>
 </project>
