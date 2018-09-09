@@ -1,3 +1,33 @@
-language: scala
+language: java
+
+sudo: false
+
 jdk:
-  - oraclejdk8
+- openjdk9
+- openjdk10
+- oraclejdk9
+- oraclejdk10
+
+allow_failures:
+- openjdk9
+- openjdk10
+
+install:
+- echo "Skipped execution of './gradlew assemble'"
+
+before_install:
+- chmod +x gradlew
+- chmod +x gradle/wrapper/gradle-wrapper.jar
+
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+
+script:
+- ./gradlew --version
+- ./gradlew test jar

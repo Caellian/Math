@@ -1,0 +1,48 @@
+versions:
+- version: 3.0.0a
+  name: Math 3.0.0a
+  changes:
+  - Switched to Kotlin. Scala version is in https://github.com/Caellian/math-scala
+  - Added some additional functionality to matrices.
+  - Renamed util package to internal, as all data in it should only be used internally.
+  - Added support for Java 9 Jigsaw modules (Math is hr.caellian.math module).
+  - Polished up the project structure.
+- version: 2.0.0
+  name: Math 2.0.0
+  changes:
+  - Changed project structure.
+  - Optimized inverse matrix calculation (by ~11x)
+- version: 1.3.1
+  name: Math 1.3.1
+  changes:
+  - Added quaternion rotation matrix initialization method.
+  - Improved documentation.
+- version: 1.3.0
+  name: Math 1.3.0
+  changes:
+  - Removed gpg signing from gradle 'prepareRelease'.
+  - Added apply methods to Matrices and Vectors.
+  - Fixed documentation errors.
+- version: 1.2.0
+  name: Math 1.2.0
+  changes:
+  - Added direct vector multiplication to matrices.
+  - Code cleanup.
+  - Switched to blacklist .gitignore file.
+- version: 1.1.0
+  name: Math 1.1.0
+  changes:
+  - Switched to MIT license.
+  - Created implementation of Matrix and Vector classes for other number types.
+  - Moved type related objects to parent .scala file.
+  - Added Travis CI file.
+  - Fixed POM file.
+- version: 1.0.1
+  name: Math 1.0.1
+  changes:
+  - Unprotected MatrixF and VectorF classes.
+  - Added MatF and VecF short type alias declarations.
+- version: 1.0.0
+  name: Math 1.0.0
+  changes:
+  - Created the library.
