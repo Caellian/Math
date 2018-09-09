@@ -1,4 +1,5 @@
 # Math
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9a53ff85db9b494eaf22700db0f06394)](https://app.codacy.com/app/Caellian/Math?utm_source=github.com&utm_medium=referral&utm_content=Caellian/Math&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/Caellian/Math.svg?branch=master)](https://travis-ci.org/Caellian/Math)
 [![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg)](https://bintray.com/caellian/caellian/Math/_latestVersion)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
