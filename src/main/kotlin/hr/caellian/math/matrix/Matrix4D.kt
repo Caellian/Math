@@ -75,12 +75,15 @@ object Matrix4D {
      * Initializes rotation matrix using forward and up vector by calculating
      * right vector.
      *
-     * @param forward forward 3f vector.
-     * @param up      up 3f vector.
+     * @param forward forward 3d vector.
+     * @param up      up 3d vector.
      * @return rotation matrix.
      */
     @JvmStatic
     fun initRotationMatrix(forward: VectorD, up: VectorD): MatrixD {
+        require(forward.size == 3) { "Invalid forward vector size (${forward.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+
         val f = forward.normalized()
         val r = up.normalized().cross(f)
         val u = f.cross(r)
@@ -111,13 +114,16 @@ object Matrix4D {
     /**
      * Initializes rotation matrix using forward, up and right vector.
      *
-     * @param forward forward 3f vector.
-     * @param up      up 3f vector.
-     * @param right   right 3f vector.
+     * @param forward forward 3d vector.
+     * @param up      up 3d vector.
+     * @param right   right 3d vector.
      * @return rotation matrix.
      */
     @JvmStatic
     fun initRotationMatrix(forward: VectorD, up: VectorD, right: VectorD): MatrixD {
+        require(forward.size == 3) { "Invalid forward vector size (${forward.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+        require(right.size == 3) { "Invalid right vector size (${right.size}), expected size of 3!" }
         return MatrixD(Array(4) { row ->
             Array(4) { column ->
                 when {
@@ -129,5 +135,26 @@ object Matrix4D {
                 }
             }
         })
+    }
+
+    /**
+     * Utility method that combines translation and rotation directly and returns world transformation matrix.
+     *
+     * @since 3.0.0
+     *
+     * @param eye camera position 3d vector.
+     * @param center position to look at.
+     * @param up up 3d vector.
+     * @return world transformation matrix.
+     */
+    @JvmStatic
+    fun lookAt(eye: VectorD, center: VectorD, up: VectorD): MatrixD {
+        require(eye.size == 3) { "Invalid eye position vector size (${eye.size}), expected size of 3!" }
+        require(center.size == 3) { "Invalid center position vector size (${center.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+
+        val forward = (eye - center).normalized()
+
+        return MatrixD.initTranslationMatrix(eye - center) * initRotationMatrix(forward, up)
     }
 }

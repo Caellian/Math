@@ -1,4 +1,13 @@
 versions:
+- version: 3.0.0b
+  name: Math 3.0.0b
+  changes:
+  - Added TypeErasable interface to allow type comparison, switchin and etc.
+  - Moved number related methods out of Matrix and Vector classes into MatrixN and VectorN classes (respectively).
+  - Created MatrixB and VectorB.
+  - Matrices and vectors now implement Iterable interface!
+  - Improved requirement fail messages to include more information and be easier to understand.
+  - Created a lookAt method for 4x4 matrices.
 - version: 3.0.0a
   name: Math 3.0.0a
   changes:

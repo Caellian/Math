@@ -3,6 +3,7 @@ package hr.caellian.math.matrix
 import hr.caellian.math.internal.BufferConstructor
 import hr.caellian.math.internal.DataWrapper
 import hr.caellian.math.internal.Replicable
+import hr.caellian.math.internal.TypeErasable
 import hr.caellian.math.vector.Vector
 import java.util.*
 
@@ -12,7 +13,7 @@ import java.util.*
  *
  * @author Caellian
  */
-abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<Array<T>>>, BufferConstructor {
+abstract class Matrix<T : Any> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<Array<T>>>, TypeErasable<T>, Iterable<T>, BufferConstructor {
     /**
      * @return number of rows in this matrix.
      */
@@ -39,75 +40,19 @@ abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<A
     operator fun get(row: Int): Array<T> = wrapped[row]
 
     /**
-     * @return this matrix.
-     */
-    operator fun unaryPlus() = this
-
-    /**
-     * @return new matrix with negated values.
-     */
-    abstract operator fun unaryMinus(): Matrix<T>
-
-    /**
-     * Performs matrix addition and returns resulting matrix.
-     * In order to add to matrices together, they must be of same size.
+     * @param row row column entries to return
      *
-     * @param other matrix to add to this one.
-     * @return resulting of matrix addition.
+     * @return entry at argument row and column
      */
-    abstract operator fun plus(other: Matrix<T>): Matrix<T>
+    operator fun get(row: Int, column: Int): T = wrapped[row][column]
 
     /**
-     * Performs matrix subtraction and returns resulting matrix.
-     * In order to subtract one matrix from another, matrices must be of same size.
+     * Behaviour depends on implementation.
      *
-     * @param other matrix to subtract from this one.
-     * @return resulting of matrix subtraction.
+     * @see MatrixN.not
+     * @see MatrixB.not
      */
-    abstract operator fun minus(other: Matrix<T>): Matrix<T>
-
-    /**
-     * Performs matrix multiplication on this matrix.
-     * Returns C from 'C = A×B' where A is this matrix and B is the other / argument matrix.
-     *
-     * @param other matrix to multiply this matrix with.
-     * @return result of matrix multiplication.
-     */
-    abstract operator fun times(other: Matrix<T>): Matrix<T>
-
-    /**
-     * Performs matrix multiplication on this matrix.
-     * Returns C from 'C = A×B' where A is this matrix and B is the other / argument vector.
-     *
-     * @param other vector to multiply this matrix with.
-     * @return result of matrix multiplication.
-     */
-    abstract operator fun times(other: Vector<T>): Vector<T>
-
-    /**
-     * Performs scalar multiplication on this matrix and returns resulting matrix.
-     *
-     * @param scalar scalar to multiply every member of this matrix with.
-     * @return result of scalar matrix multiplication.
-     */
-    abstract operator fun times(scalar: T): Matrix<T>
-
-    /**
-     * @return inverse matrix.
-     */
-    operator fun not(): Matrix<T> = inverse()
-
-    /**
-     * @return inverse matrix.
-     */
-    abstract fun inverse(singularityThreshold: Double = 1e-11): Matrix<T>
-
-    /**
-     * This method replaces data of this matrix with LU decomposition data.
-     *
-     * @return self.
-     */
-    abstract fun inverseUnsafe(singularityThreshold: Double = 1e-11): Matrix<T>
+    abstract fun not(): Matrix<T>
 
     /**
      * Switches two rows together.
@@ -128,44 +73,6 @@ abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<A
      * @since 3.0.0
      */
     abstract fun switchColumns(columnA: Int, columnB: Int): Matrix<T>
-
-    /**
-     * Multiplies all entries of a row with given scalar.
-     *
-     * @param row        row to multiply.
-     * @param multiplier scalar to multiply rows entries with.
-     * @return resulting matrix.
-     */
-    abstract fun multiplyRow(row: Int, multiplier: T): Matrix<T>
-
-    /**
-     * Multiplies all entries of a column with given scalar.
-     *
-     * @param column        column to multiply.
-     * @param multiplier scalar to multiply column entries with.
-     * @return resulting matrix.
-     */
-    abstract fun multiplyColumn(column: Int, multiplier: T): Matrix<T>
-
-    /**
-     * Adds one row from matrix to another.
-     *
-     * @param from       row to add to another row.
-     * @param to         row to add another row to; data will be stored on this row.
-     * @param multiplier scalar to multiply all members of added row with on addition. It equals to 1 by default.
-     * @return new matrix.
-     */
-    abstract fun addRows(from: Int, to: Int, multiplier: T? = null): Matrix<T>
-
-    /**
-     * Adds one column from matrix to another.
-     *
-     * @param from       column to add to another column.
-     * @param to         column to add another column to; data will be stored on this column.
-     * @param multiplier scalar to multiply all members of added column with on addition. It equals to 1 by default.
-     * @return new matrix.
-     */
-    abstract fun addColumns(from: Int, to: Int, multiplier: T? = null): Matrix<T>
 
     /**
      * Inserts given row data at given index shifting rest of the matrix to the next index.
@@ -229,6 +136,11 @@ abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<A
     fun validate(): Boolean = wrapped.all { it.size == wrapped[0].size }
 
     /**
+     * Returns an iterator over the elements of this object.
+     */
+    override fun iterator() = MatrixIterator(this)
+
+    /**
      * Returns copy of data of this Matrix as a 2D array.
      *
      * Default implementation:
@@ -239,11 +151,6 @@ abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<A
      * @return 2D array containing data of this matrix.
      */
     abstract fun toArray(): Array<Array<T>>
-
-    /**
-     * @return clone of this matrix.
-     */
-    abstract override fun replicated(): Matrix<T>
 
     /**
      * @param other other matrix or object instance of type extending matrix.
@@ -273,4 +180,36 @@ abstract class Matrix<T> : Replicable<Matrix<T>>, DataWrapper<Matrix<T>, Array<A
      * @return string representation of this matrix.
      */
     override fun toString(): String = "{${wrapped.joinToString(",\n") { "[${it.joinToString(", ")}]" }}}"
+
+    /**
+     * Custom matrix iterator class.
+     *
+     * @since 3.0.0
+     */
+    class MatrixIterator<T: Any>(private val parent: Matrix<T>): Iterator<T> {
+        var row = 0
+        var column = 0
+
+        override fun hasNext() = row < parent.rowCount && column < parent.columnCount
+
+        /**
+         * Returns the next element in the iteration.
+         */
+        override fun next(): T {
+            if (row >= parent.rowCount) {
+                row = 0
+                column++
+            }
+
+            return parent.wrapped[row++][column]
+        }
+
+        /**
+         * Resets the iterator allowing it to be used again to reduce garbage.
+         */
+        fun reset() {
+            row = 0
+            column = 0
+        }
+    }
 }

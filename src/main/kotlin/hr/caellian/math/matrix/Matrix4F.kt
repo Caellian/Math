@@ -81,6 +81,9 @@ object Matrix4F {
      */
     @JvmStatic
     fun initRotationMatrix(forward: VectorF, up: VectorF): MatrixF {
+        require(forward.size == 3) { "Invalid forward vector size (${forward.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+
         val f = forward.normalized()
         val r = up.normalized().cross(f)
         val u = f.cross(r)
@@ -95,6 +98,8 @@ object Matrix4F {
      */
     @JvmStatic
     fun initRotationMatrix(quaternion: VectorF): MatrixF {
+        require(quaternion.size == 4) { "Invalid quaternion size (${quaternion.size}), expected size of 4!" }
+
         val forward = VectorF(2f * (quaternion[0] * quaternion[2] - quaternion[3] * quaternion[1]),
                               2f * (quaternion[1] * quaternion[2] + quaternion[3] * quaternion[0]),
                               1f - 2f * (quaternion[0] * quaternion[0] + quaternion[1] * quaternion[1]))
@@ -118,6 +123,9 @@ object Matrix4F {
      */
     @JvmStatic
     fun initRotationMatrix(forward: VectorF, up: VectorF, right: VectorF): MatrixF {
+        require(forward.size == 3) { "Invalid forward vector size (${forward.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+        require(right.size == 3) { "Invalid right vector size (${right.size}), expected size of 3!" }
         return MatrixF(Array(4) { row ->
             Array(4) { column ->
                 when {
@@ -129,5 +137,26 @@ object Matrix4F {
                 }
             }
         })
+    }
+
+    /**
+     * Utility method that combines translation and rotation directly and returns world transformation matrix.
+     *
+     * @since 3.0.0
+     *
+     * @param eye camera position 3f vector.
+     * @param center position to look at.
+     * @param up up 3f vector.
+     * @return world transformation matrix.
+     */
+    @JvmStatic
+    fun lookAt(eye: VectorF, center: VectorF, up: VectorF): MatrixF {
+        require(eye.size == 3) { "Invalid eye position vector size (${eye.size}), expected size of 3!" }
+        require(center.size == 3) { "Invalid center position vector size (${center.size}), expected size of 3!" }
+        require(up.size == 3) { "Invalid up vector size (${up.size}), expected size of 3!" }
+
+        val forward = (eye - center).normalized()
+
+        return MatrixF.initTranslationMatrix(eye - center) * initRotationMatrix(forward, up)
     }
 }

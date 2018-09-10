@@ -1,9 +1,13 @@
-# Math v3.0.0a
+# Math v3.0.0b
 [![Build Status](https://travis-ci.org/Caellian/Math.svg?branch=master)](https://travis-ci.org/Caellian/Math)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9a53ff85db9b494eaf22700db0f06394)](https://app.codacy.com/app/Caellian/Math?utm_source=github.com&utm_medium=referral&utm_content=Caellian/Math&utm_campaign=Badge_Grade_Dashboard)
 [![Download](https://api.bintray.com/packages/caellian/caellian/Math/images/download.svg)](https://bintray.com/caellian/caellian/Math/_latestVersion)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 ## Math library containing classes for GLSL calculation and interaction.
+
+Math library objects are immutable by default to ensure data safety. Math is designed to be simple and easy to use.
+It integrates nicely into JVM making it usable with both Java and Kotlin (and Scala). If you're looking for syntactic
+sugar, Math is as sweet as it could possibly be. Enjoy!
 
 ### Using Math library
 Latest stable version of this library can be found on jCenter.

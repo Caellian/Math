@@ -1,7 +1,7 @@
 package hr.caellian.math.vector
 
-import hr.caellian.math.matrix.Matrix
 import hr.caellian.math.matrix.MatrixD
+import hr.caellian.math.matrix.MatrixN
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -53,7 +53,7 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return result of vector addition.
      */
-    override operator fun plus(other: Vector<Double>): VectorD {
+    override operator fun plus(other: VectorN<Double>): VectorD {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorD(Array(size) { this[it] + other[it] })
     }
@@ -64,7 +64,7 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return result of vector subtraction.
      */
-    override operator fun minus(other: Vector<Double>): VectorD {
+    override operator fun minus(other: VectorN<Double>): VectorD {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorD(Array(size) { this[it] - other[it] })
     }
@@ -75,7 +75,7 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return result of vector multiplication.
      */
-    override operator fun times(other: Vector<Double>): VectorD {
+    override operator fun times(other: VectorN<Double>): VectorD {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorD(Array(size) { this[it] * other[it] })
     }
@@ -86,7 +86,7 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return result of vector division.
      */
-    override operator fun div(other: Vector<Double>): VectorD {
+    override operator fun div(other: VectorN<Double>): VectorD {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorD(Array(size) { this[it] / other[it] })
     }
@@ -149,13 +149,13 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return distance between this and other vector.
      */
-    override fun distanceTo(other: Vector<Double>): Double = sqrt(this dot other)
+    override fun distanceTo(other: VectorN<Double>): Double = sqrt(this dot other)
 
     /**
      *
      * @return dot product of two vectors.
      */
-    override fun dot(other: Vector<Double>): Double {
+    override fun dot(other: VectorN<Double>): Double {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return wrapped.zip(other.wrapped).sumByDouble { (a, b) -> a * b }
     }
@@ -165,7 +165,7 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return cross product.
      */
-    override fun cross(other: Vector<Double>): VectorD {
+    override fun cross(other: VectorN<Double>): VectorD {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
 
         return when (size) {
@@ -192,14 +192,14 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      *
      * @return rotated vector.
      */
-    override fun rotated(rotationMatrix: Matrix<Double>): VectorD = (rotationMatrix * verticalMatrix).toVector() as VectorD
+    override fun rotated(rotationMatrix: MatrixN<Double>): VectorD = (rotationMatrix * verticalMatrix).toVector() as VectorD
 
     /**
      * Linearly interpolates between two vectors.
      *
      * @return linear interpolation.
      */
-    override fun lerp(destination: Vector<Double>, percent: Double): VectorD = this + (destination - this) * percent
+    override fun lerp(destination: VectorN<Double>, percent: Double): VectorD = this + (destination - this) * percent
 
     /**
      * Vertical matrix containing data of this vector.
@@ -221,6 +221,11 @@ class VectorD(override var wrapped: Array<Double> = emptyArray()) : VectorN<Doub
      * @return clone of this vector.
      */
     override fun replicated(): VectorD = VectorD(toArray())
+
+    /**
+     * @return type supported by this class.
+     */
+    override fun getTypeClass() = Double::class
 
     /**
      * Creates a new instance of wrapper containing given data.

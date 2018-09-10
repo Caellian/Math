@@ -1,7 +1,7 @@
 package hr.caellian.math.vector
 
-import hr.caellian.math.matrix.Matrix
 import hr.caellian.math.matrix.MatrixI
+import hr.caellian.math.matrix.MatrixN
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -54,7 +54,7 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return result of vector addition.
      */
-    override operator fun plus(other: Vector<Int>): VectorI {
+    override operator fun plus(other: VectorN<Int>): VectorI {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorI(Array(size) { this[it] + other[it] })
     }
@@ -65,7 +65,7 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return result of vector subtraction.
      */
-    override operator fun minus(other: Vector<Int>): VectorI {
+    override operator fun minus(other: VectorN<Int>): VectorI {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorI(Array(size) { this[it] - other[it] })
     }
@@ -76,7 +76,7 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return result of vector multiplication.
      */
-    override operator fun times(other: Vector<Int>): VectorI {
+    override operator fun times(other: VectorN<Int>): VectorI {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorI(Array(size) { this[it] * other[it] })
     }
@@ -87,7 +87,7 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return result of vector division.
      */
-    override operator fun div(other: Vector<Int>): VectorI {
+    override operator fun div(other: VectorN<Int>): VectorI {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorI(Array(size) { this[it] / other[it] })
     }
@@ -150,13 +150,13 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return distance between this and other vector.
      */
-    override fun distanceTo(other: Vector<Int>): Int = sqrt((this dot other).toFloat()).roundToInt()
+    override fun distanceTo(other: VectorN<Int>): Int = sqrt((this dot other).toFloat()).roundToInt()
 
     /**
      *
      * @return dot product of two vectors.
      */
-    override fun dot(other: Vector<Int>): Int {
+    override fun dot(other: VectorN<Int>): Int {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return wrapped.zip(other.wrapped).sumBy { (a, b) -> a * b }
     }
@@ -166,7 +166,7 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return cross product.
      */
-    override fun cross(other: Vector<Int>): VectorI {
+    override fun cross(other: VectorN<Int>): VectorI {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
 
         return when (size) {
@@ -193,14 +193,14 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      *
      * @return rotated vector.
      */
-    override fun rotated(rotationMatrix: Matrix<Int>): VectorI = (rotationMatrix * verticalMatrix).toVector() as VectorI
+    override fun rotated(rotationMatrix: MatrixN<Int>): VectorI = (rotationMatrix * verticalMatrix).toVector() as VectorI
 
     /**
      * Linearly interpolates between two vectors.
      *
      * @return linear interpolation.
      */
-    override fun lerp(destination: Vector<Int>, percent: Int): VectorI = this + (destination - this) * percent
+    override fun lerp(destination: VectorN<Int>, percent: Int): VectorI = this + (destination - this) * percent
 
     /**
      * Vertical matrix containing data of this vector.
@@ -222,6 +222,11 @@ class VectorI(override var wrapped: Array<Int> = emptyArray()) : VectorN<Int>() 
      * @return clone of this vector.
      */
     override fun replicated(): VectorI = VectorI(toArray())
+
+    /**
+     * @return type supported by this class.
+     */
+    override fun getTypeClass() = Int::class
 
     /**
      * Creates a new instance of wrapper containing given data.

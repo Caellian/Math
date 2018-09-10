@@ -1,8 +1,8 @@
 package hr.caellian.math.vector
 
-import hr.caellian.math.matrix.Matrix
-import hr.caellian.math.matrix.MatrixF
 import hr.caellian.math.internal.DataUtil.sumByFloat
+import hr.caellian.math.matrix.MatrixF
+import hr.caellian.math.matrix.MatrixN
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -54,7 +54,7 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return result of vector addition.
      */
-    override operator fun plus(other: Vector<Float>): VectorF {
+    override operator fun plus(other: VectorN<Float>): VectorF {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorF(Array(size) { this[it] + other[it] })
     }
@@ -65,7 +65,7 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return result of vector subtraction.
      */
-    override operator fun minus(other: Vector<Float>): VectorF {
+    override operator fun minus(other: VectorN<Float>): VectorF {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorF(Array(size) { this[it] - other[it] })
     }
@@ -76,7 +76,7 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return result of vector multiplication.
      */
-    override operator fun times(other: Vector<Float>): VectorF {
+    override operator fun times(other: VectorN<Float>): VectorF {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorF(Array(size) { this[it] * other[it] })
     }
@@ -87,7 +87,7 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return result of vector division.
      */
-    override operator fun div(other: Vector<Float>): VectorF {
+    override operator fun div(other: VectorN<Float>): VectorF {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return VectorF(Array(size) { this[it] / other[it] })
     }
@@ -150,13 +150,13 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return distance between this and other vector.
      */
-    override fun distanceTo(other: Vector<Float>): Float = sqrt(this dot other)
+    override fun distanceTo(other: VectorN<Float>): Float = sqrt(this dot other)
 
     /**
      *
      * @return dot product of two vectors.
      */
-    override fun dot(other: Vector<Float>): Float {
+    override fun dot(other: VectorN<Float>): Float {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
         return wrapped.zip(other.wrapped).sumByFloat { (a, b) -> a * b }
     }
@@ -166,7 +166,7 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return cross product.
      */
-    override fun cross(other: Vector<Float>): VectorF {
+    override fun cross(other: VectorN<Float>): VectorF {
         require(size == other.size) { "Invalid argument vector size: ${other.size}!" }
 
         return when (size) {
@@ -193,14 +193,14 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      *
      * @return rotated vector.
      */
-    override fun rotated(rotationMatrix: Matrix<Float>): VectorF = (rotationMatrix * verticalMatrix).toVector() as VectorF
+    override fun rotated(rotationMatrix: MatrixN<Float>): VectorF = (rotationMatrix * verticalMatrix).toVector() as VectorF
 
     /**
      * Linearly interpolates between two vectors.
      *
      * @return linear interpolation.
      */
-    override fun lerp(destination: Vector<Float>, percent: Float): VectorF = this + (destination - this) * percent
+    override fun lerp(destination: VectorN<Float>, percent: Float): VectorF = this + (destination - this) * percent
 
     /**
      * Vertical matrix containing data of this vector.
@@ -222,6 +222,11 @@ class VectorF(override var wrapped: Array<Float> = emptyArray()) : VectorN<Float
      * @return clone of this vector.
      */
     override fun replicated(): VectorF = VectorF(toArray())
+
+    /**
+     * @return type supported by this class.
+     */
+    override fun getTypeClass() = Float::class
 
     /**
      * Creates a new instance of wrapper containing given data.

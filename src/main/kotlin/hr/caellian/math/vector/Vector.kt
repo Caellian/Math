@@ -1,9 +1,10 @@
 package hr.caellian.math.vector
 
-import hr.caellian.math.matrix.Matrix
 import hr.caellian.math.internal.BufferConstructor
 import hr.caellian.math.internal.DataWrapper
 import hr.caellian.math.internal.Replicable
+import hr.caellian.math.internal.TypeErasable
+import hr.caellian.math.matrix.Matrix
 import java.util.*
 
 /**
@@ -13,7 +14,7 @@ import java.util.*
  * @tparam T vector data type.
  * @author Caellian
  */
-abstract class Vector<T> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T>>, BufferConstructor {
+abstract class Vector<T : Any> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T>>, TypeErasable<T>, Iterable<T>, BufferConstructor {
     /**
      * Size of this vector.
      */
@@ -28,135 +29,6 @@ abstract class Vector<T> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T
     operator fun get(index: Int): T = wrapped[index]
 
     /**
-     * @return this vector.
-     */
-    operator fun unaryPlus() = this
-
-    /**
-     * @return new vector with negated values.
-     */
-    abstract operator fun unaryMinus(): Vector<T>
-
-    /**
-     * Adds two vectors together and returns resulting vector.
-     * In order to add to matrices together, they must be of same size.
-     *
-     * @return result of vector addition.
-     */
-    abstract operator fun plus(other: Vector<T>): Vector<T>
-
-    /**
-     * Subtracts other vector from this one and returns resulting vector.
-     * In order to subtract one vector from another, both vectors must be of same size.
-     *
-     * @return result of vector subtraction.
-     */
-    abstract operator fun minus(other: Vector<T>): Vector<T>
-
-    /**
-     * Multiplies two vectors together and returns resulting vector.
-     * In order to add to multiply vectors together, they must be of same size.
-     *
-     * @return result of vector multiplication.
-     */
-    abstract operator fun times(other: Vector<T>): Vector<T>
-
-    /**
-     * Divides this vector with other and returns resulting vector.
-     * In order to divide one vector with another, both vectors must be of same size.
-     *
-     * @return result of vector division.
-     */
-    abstract operator fun div(other: Vector<T>): Vector<T>
-
-    /**
-     * Performs scalar addition on this vector and returns resulting vector.
-     *
-     * @return result of vector scalar addition.
-     */
-    abstract operator fun plus(value: T): Vector<T>
-
-    /**
-     * Performs scalar subtraction on this vector and returns resulting vector.
-     *
-     * @return result of scalar vector subtraction.
-     */
-    abstract operator fun minus(value: T): Vector<T>
-
-    /**
-     * Performs scalar multiplication on this vector and returns resulting vector.
-     *
-     * @return result of scalar vector multiplication.
-     */
-    abstract operator fun times(value: T): Vector<T>
-
-    /**
-     * Performs scalar division on this vector and returns resulting vector.
-     *
-     * @return result of scalar vector division.
-     */
-    abstract operator fun div(value: T): Vector<T>
-
-    /**
-     * @return biggest value of a member of this vector.
-     */
-    abstract fun max(): T
-
-    /**
-     * @return smalled value of a member of this vector.
-     */
-    abstract fun min(): T
-
-    /**
-     * @return new vector containing absolute values of this vector.
-     */
-    abstract fun absolute(): Vector<T>
-
-    /**
-     * @return new vector with normalized values of this one.
-     */
-    abstract fun normalized(): Vector<T>
-
-    /**
-     * @return magnitude of this vector.
-     */
-    abstract fun magnitude(): T
-
-    /**
-     * Calculates distance from this to other vector.
-     *
-     * @return distance between this and other vector.
-     */
-    abstract fun distanceTo(other: Vector<T>): T
-
-    /**
-     *
-     * @return dot product of two vectors.
-     */
-    abstract infix fun dot(other: Vector<T>): T
-
-    /**
-     * Returns cross product of this and other vector.
-     *
-     * @return cross product.
-     */
-    abstract fun cross(other: Vector<T>): Vector<T>
-
-    /**
-     * Rotates this vector using rotation matrix.
-     *
-     * @return rotated vector.
-     */
-    abstract fun rotated(rotationMatrix: Matrix<T>): Vector<T>
-
-    /**
-     * Linearly interpolates between two vectors.
-     *
-     * @return linear interpolation.
-     */
-    abstract fun lerp(destination: Vector<T>, percent: T): Vector<T>
-
-    /**
      * Vertical matrix containing data of this vector.
      */
     abstract val verticalMatrix: Matrix<T>
@@ -165,6 +37,11 @@ abstract class Vector<T> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T
      * Horizontal matrix containing data of this vector.
      */
     abstract val horizontalMatrix: Matrix<T>
+
+    /**
+     * Returns an iterator over the elements of this object.
+     */
+    override fun iterator() = VectorIterator(this)
 
     /**
      * Returns array containing vector data.
@@ -176,11 +53,6 @@ abstract class Vector<T> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T
      * @return array containing data of this vector.
      */
     abstract fun toArray(): Array<T>
-
-    /**
-     * @return clone of this vector.
-     */
-    abstract override fun replicated(): Vector<T>
 
     /**
      * @return true if this vector is equal to other vector.
@@ -209,4 +81,30 @@ abstract class Vector<T> : Replicable<Vector<T>>, DataWrapper<Vector<T>, Array<T
      * @return string representation of this vector.
      */
     override fun toString(): String = "(${wrapped.joinToString(", ")})"
+
+    /**
+     * Custom vector iterator class.
+     *
+     * @since 3.0.0
+     */
+    class VectorIterator<T: Any>(private val parent: Vector<T>): Iterator<T> {
+        var pos = 0
+
+        /**
+         * Returns `true` if the iteration has more elements.
+         */
+        override fun hasNext() = pos < parent.size
+
+        /**
+         * Returns the next element in the iteration.
+         */
+        override fun next() = parent.wrapped[pos++]
+
+        /**
+         * Resets the iterator allowing it to be used again to reduce garbage.
+         */
+        fun reset() {
+            pos = 0
+        }
+    }
 }

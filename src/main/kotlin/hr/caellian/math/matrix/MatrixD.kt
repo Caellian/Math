@@ -1,8 +1,8 @@
 package hr.caellian.math.matrix
 
 import hr.caellian.math.internal.DataUtil.transpose
-import hr.caellian.math.vector.Vector
 import hr.caellian.math.vector.VectorD
+import hr.caellian.math.vector.VectorN
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -37,7 +37,7 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      *
      * @param size width & height of new matrix.
      */
-    constructor(size: Int) : this(Array(size) { _ -> Array(size) { 0.0 } })
+    constructor(size: Int, default: Double = 0.0) : this(Array(size) { _ -> Array(size) { default } })
 
     /**
      * Creates a new matrix containing given data.
@@ -45,31 +45,7 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param rows    number of rows matrix should store.
      * @param columns number of columns matrix should store.
      */
-    constructor(rows: Int, columns: Int) : this(Array(rows) { _ -> Array(columns) { 0.0 } })
-
-    /**
-     * Creates a new matrix from given arrays.
-     *
-     * Default constructor is preferred over this one as they are virtually the same but this one is slower because
-     * of spread operator.
-     *
-     * @param vertical if true, arrays will represent columns; if false, they will represent rows.
-     * @param arrays   data stored in new matrix.
-     *
-     */
-    constructor(vertical: Boolean = false, vararg arrays: Array<Double>) : this() {
-        require(arrays.all { it.size == arrays[0].size }) {
-            if (vertical)
-                "Matrix columns must be of equal length!"
-            else
-                "Matrix rows must be of equal length!"
-        }
-
-        wrapped = arrayOf(*arrays)
-        if (vertical) {
-            wrapped = transpose().wrapped
-        }
-    }
+    constructor(rows: Int, columns: Int, default: Double = 0.0) : this(Array(rows) { _ -> Array(columns) { default } })
 
     /**
      * Creates a new matrix using collection values.
@@ -111,7 +87,7 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
     /**
      * @return new matrix with negated values.
      */
-    override fun unaryMinus(): MatrixD = MatrixD(
+    override fun unaryMinus() = MatrixD(
             Array(rowCount) { row -> Array(columnCount) { column -> -wrapped[row][column] } })
 
     /**
@@ -121,8 +97,8 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param other matrix to add to this one.
      * @return resulting of matrix addition.
      */
-    override fun plus(other: Matrix<Double>): MatrixD {
-        require(columnCount == other.columnCount && rowCount == other.rowCount) { "Matrices must be of same size!" }
+    override fun plus(other: MatrixN<Double>): MatrixD {
+        require(rowCount == other.rowCount && columnCount == other.columnCount) { "Invalid argument matrix size: ${other.rowCount}x${other.columnCount}!" }
         return MatrixD(
                 Array(rowCount) { row -> Array(columnCount) { column -> wrapped[row][column] + other[row][column] } })
     }
@@ -134,8 +110,8 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param other matrix to subtract from this one.
      * @return resulting of matrix subtraction.
      */
-    override fun minus(other: Matrix<Double>): MatrixD {
-        require(columnCount == other.columnCount && rowCount == other.rowCount) { "Matrices must be of same size!" }
+    override fun minus(other: MatrixN<Double>): MatrixD {
+        require(rowCount == other.rowCount && columnCount == other.columnCount) { "Invalid argument matrix size: ${other.rowCount}x${other.columnCount}!" }
         return MatrixD(
                 Array(rowCount) { row -> Array(columnCount) { column -> wrapped[row][column] - other[row][column] } })
     }
@@ -147,8 +123,8 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param other matrix to multiply this matrix with.
      * @return result of matrix multiplication.
      */
-    override operator fun times(other: Matrix<Double>): MatrixD {
-        require(columnCount == other.rowCount) { "Invalid multiplication ($rowCount x $columnCount) * (${other.rowCount} x ${other.columnCount})!" }
+    override operator fun times(other: MatrixN<Double>): MatrixD {
+        require(columnCount == other.rowCount) { "Invalid multiplication (mat${rowCount}x$columnCount) * (mat${other.rowCount}x${other.columnCount})!" }
         return MatrixD(Array(rowCount) { row ->
             Array(other.columnCount) { column ->
                 (0 until columnCount).sumByDouble { wrapped[row][it] * other.wrapped[it][column] }
@@ -163,7 +139,7 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param other vector to multiply this matrix with.
      * @return result of matrix multiplication.
      */
-    override fun times(other: Vector<Double>): VectorD = (this * other.verticalMatrix).toVector()
+    override fun times(other: VectorN<Double>): VectorD = (this * other.verticalMatrix as MatrixN<Double>).toVector()
 
     /**
      * Performs scalar multiplication on this matrix and returns resulting matrix.
@@ -374,24 +350,24 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      *
      * @return vector containing only first column of matrix data.
      */
-    override fun forceToVector(): VectorD = VectorD(firstColumn().transpose()[0])
+    override fun forceToVector() = VectorD(firstColumn().transpose()[0])
 
     /**
      * @return a new matrix containing only the first row of this matrix.
      */
-    override fun firstRow(): MatrixD = MatrixD(
+    override fun firstRow() = MatrixD(
             Array(1) { row -> Array(columnCount) { column -> wrapped[row][column] } })
 
     /**
      * @return a new matrix containing only the first column of this matrix.
      */
-    override fun firstColumn(): MatrixD = MatrixD(
+    override fun firstColumn() = MatrixD(
             Array(rowCount) { row -> Array(1) { column -> wrapped[row][column] } })
 
     /**
      * @return transposed matrix.
      */
-    override fun transpose(): MatrixD = MatrixD(wrapped.transpose())
+    override fun transpose() = MatrixD(wrapped.transpose())
 
     /**
      * @return buffer containing data of this matrix.
@@ -416,7 +392,12 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
     /**
      * @return clone of this matrix.
      */
-    override fun replicated(): MatrixD = MatrixD(toArray())
+    override fun replicated() = MatrixD(toArray())
+
+    /**
+     * @return type supported by this class.
+     */
+    override fun getTypeClass() = Double::class
 
     /**
      * Creates a new instance of [MatrixD] containing given data.
@@ -424,7 +405,7 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
      * @param data data of new wrapper.
      * @return new instance of wrapper containing argument data.
      */
-    override fun withData(wrapped: Array<Array<Double>>): Matrix<Double> = MatrixD(wrapped)
+    override fun withData(wrapped: Array<Array<Double>>) = MatrixD(wrapped)
 
     companion object {
         /**
@@ -500,13 +481,34 @@ class MatrixD(override var wrapped: Array<Array<Double>> = emptyArray(), vertica
         }
 
         /**
-         * Initializes a new translation matrix.
+         * Initializes a new translation matrix using array of axial translations.
          *
          * @param location relative location.
          * @return translation matrix.
          */
         @JvmStatic
         fun initTranslationMatrix(location: Array<Double>): MatrixD {
+            return MatrixD(Array(location.size + 1) { row ->
+                Array(location.size + 1) { column ->
+                    when {
+                        row == column -> 1.0
+                        column == location.size && row < location.size -> location[row]
+                        else -> 0.0
+                    }
+                }
+            })
+        }
+
+        /**
+         * Initializes a new translation matrix using [VectorD].
+         *
+         * @since 3.0.0
+         *
+         * @param location relative location.
+         * @return translation matrix.
+         */
+        @JvmStatic
+        fun initTranslationMatrix(location: VectorD): MatrixD {
             return MatrixD(Array(location.size + 1) { row ->
                 Array(location.size + 1) { column ->
                     when {

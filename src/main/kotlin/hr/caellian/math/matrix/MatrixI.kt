@@ -1,8 +1,8 @@
 package hr.caellian.math.matrix
 
 import hr.caellian.math.internal.DataUtil.transpose
-import hr.caellian.math.vector.Vector
 import hr.caellian.math.vector.VectorI
+import hr.caellian.math.vector.VectorN
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -37,7 +37,7 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      *
      * @param size width & height of new matrix.
      */
-    constructor(size: Int) : this(Array(size) { _ -> Array(size) { 0 } })
+    constructor(size: Int, default: Int = 0) : this(Array(size) { _ -> Array(size) { default } })
 
     /**
      * Creates a new matrix containing given data.
@@ -45,31 +45,7 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param rows    number of rows matrix should store.
      * @param columns number of columns matrix should store.
      */
-    constructor(rows: Int, columns: Int) : this(Array(rows) { _ -> Array(columns) { 0 } })
-
-    /**
-     * Creates a new matrix from given arrays.
-     *
-     * Default constructor is preferred over this one as they are virtually the same but this one is slower because
-     * of spread operator.
-     *
-     * @param vertical if true, arrays will represent columns; if false, they will represent rows.
-     * @param arrays   data stored in new matrix.
-     *
-     */
-    constructor(vertical: Boolean = false, vararg arrays: Array<Int>) : this() {
-        require(arrays.all { it.size == arrays[0].size }) {
-            if (vertical)
-                "Matrix columns must be of equal length!"
-            else
-                "Matrix rows must be of equal length!"
-        }
-
-        wrapped = arrayOf(*arrays)
-        if (vertical) {
-            wrapped = transpose().wrapped
-        }
-    }
+    constructor(rows: Int, columns: Int, default: Int = 0) : this(Array(rows) { _ -> Array(columns) { default } })
 
     /**
      * Creates a new matrix using collection values.
@@ -111,7 +87,7 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
     /**
      * @return new matrix with negated values.
      */
-    override fun unaryMinus(): MatrixI = MatrixI(
+    override fun unaryMinus() = MatrixI(
             Array(rowCount) { row -> Array(columnCount) { column -> -wrapped[row][column] } })
 
     /**
@@ -121,8 +97,8 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param other matrix to add to this one.
      * @return resulting of matrix addition.
      */
-    override fun plus(other: Matrix<Int>): MatrixI {
-        require(columnCount == other.columnCount && rowCount == other.rowCount) { "Matrices must be of same size!" }
+    override fun plus(other: MatrixN<Int>): MatrixI {
+        require(rowCount == other.rowCount && columnCount == other.columnCount) { "Invalid argument matrix size: ${other.rowCount}x${other.columnCount}!" }
         return MatrixI(
                 Array(rowCount) { row -> Array(columnCount) { column -> wrapped[row][column] + other[row][column] } })
     }
@@ -134,8 +110,8 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param other matrix to subtract from this one.
      * @return resulting of matrix subtraction.
      */
-    override fun minus(other: Matrix<Int>): MatrixI {
-        require(columnCount == other.columnCount && rowCount == other.rowCount) { "Matrices must be of same size!" }
+    override fun minus(other: MatrixN<Int>): MatrixI {
+        require(rowCount == other.rowCount && columnCount == other.columnCount) { "Invalid argument matrix size: ${other.rowCount}x${other.columnCount}!" }
         return MatrixI(
                 Array(rowCount) { row -> Array(columnCount) { column -> wrapped[row][column] - other[row][column] } })
     }
@@ -147,8 +123,8 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param other matrix to multiply this matrix with.
      * @return result of matrix multiplication.
      */
-    override operator fun times(other: Matrix<Int>): MatrixI {
-        require(columnCount == other.rowCount) { "Invalid multiplication ($rowCount x $columnCount) * (${other.rowCount} x ${other.columnCount})!" }
+    override operator fun times(other: MatrixN<Int>): MatrixI {
+        require(columnCount == other.rowCount) { "Invalid multiplication (mat${rowCount}x$columnCount) * (mat${other.rowCount}x${other.columnCount})!" }
         return MatrixI(Array(rowCount) { row ->
             Array(other.columnCount) { column ->
                 (0 until columnCount).sumBy { wrapped[row][it] * other.wrapped[it][column] }
@@ -163,7 +139,7 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param other vector to multiply this matrix with.
      * @return result of matrix multiplication.
      */
-    override fun times(other: Vector<Int>): VectorI = (this * other.verticalMatrix).toVector()
+    override fun times(other: VectorN<Int>): VectorI = (this * other.verticalMatrix as MatrixN<Int>).toVector()
 
     /**
      * Performs scalar multiplication on this matrix and returns resulting matrix.
@@ -379,19 +355,19 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
     /**
      * @return a new matrix containing only the first row of this matrix.
      */
-    override fun firstRow(): MatrixI = MatrixI(
+    override fun firstRow() = MatrixI(
             Array(1) { row -> Array(columnCount) { column -> wrapped[row][column] } })
 
     /**
      * @return a new matrix containing only the first column of this matrix.
      */
-    override fun firstColumn(): MatrixI = MatrixI(
+    override fun firstColumn() = MatrixI(
             Array(rowCount) { row -> Array(1) { column -> wrapped[row][column] } })
 
     /**
      * @return transposed matrix.
      */
-    override fun transpose(): MatrixI = MatrixI(wrapped.transpose())
+    override fun transpose() = MatrixI(wrapped.transpose())
 
     /**
      * @return buffer containing data of this matrix.
@@ -416,7 +392,12 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
     /**
      * @return clone of this matrix.
      */
-    override fun replicated(): MatrixI = MatrixI(toArray())
+    override fun replicated() = MatrixI(toArray())
+
+    /**
+     * @return type supported by this class.
+     */
+    override fun getTypeClass() = Int::class
 
     /**
      * Creates a new instance of [MatrixI] containing given data.
@@ -424,7 +405,7 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
      * @param data data of new wrapper.
      * @return new instance of wrapper containing argument data.
      */
-    override fun withData(wrapped: Array<Array<Int>>): Matrix<Int> = MatrixI(wrapped)
+    override fun withData(wrapped: Array<Array<Int>>) = MatrixI(wrapped)
 
     companion object {
         /**
@@ -500,13 +481,34 @@ class MatrixI(override var wrapped: Array<Array<Int>> = emptyArray(), vertical: 
         }
 
         /**
-         * Initializes a new translation matrix.
+         * Initializes a new translation matrix using array of axial translations.
          *
          * @param location relative location.
          * @return translation matrix.
          */
         @JvmStatic
         fun initTranslationMatrix(location: Array<Int>): MatrixI {
+            return MatrixI(Array(location.size + 1) { row ->
+                Array(location.size + 1) { column ->
+                    when {
+                        row == column -> 1
+                        column == location.size && row < location.size -> location[row]
+                        else -> 0
+                    }
+                }
+            })
+        }
+
+        /**
+         * Initializes a new translation matrix using [VectorI].
+         *
+         * @since 3.0.0
+         *
+         * @param location relative location.
+         * @return translation matrix.
+         */
+        @JvmStatic
+        fun initTranslationMatrix(location: VectorI): MatrixI {
             return MatrixI(Array(location.size + 1) { row ->
                 Array(location.size + 1) { column ->
                     when {
